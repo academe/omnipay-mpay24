@@ -4,8 +4,11 @@ namespace Omnipay\Mpay24;
 
 //use Omnipay\Common\AbstractGateway;
 //use Omnipay\Common\Message\RequestInterface;
+use Omnipay\Mpay24\Messages\FetchTransactionRequest;
+use Omnipay\Mpay24\Messages\Seamless\TokenRequest;
 use Omnipay\Mpay24\Messages\Seamless\PurchaseRequest;
 use Omnipay\Mpay24\Messages\Seamless\CompletePurchaseRequest;
+use Omnipay\Mpay24\Messages\Seamless\CompletePurchaseResponse;
 use Omnipay\Mpay24\Messages\AcceptNotification;
 
 class SeamlessGateway extends RedirectGateway
@@ -21,6 +24,15 @@ class SeamlessGateway extends RedirectGateway
         $parameters['useProfile'] = false;
 
         return $parameters;
+    }
+
+    /**
+     * @param  array $parameters
+     * @return TokenRequest
+     */
+    public function token(array $parameters = [])
+    {
+        return $this->createRequest(TokenRequest::class, $parameters);
     }
 
     /**
@@ -44,5 +56,10 @@ class SeamlessGateway extends RedirectGateway
     public function acceptNotification(array $parameters = [])
     {
         return $this->createRequest(AcceptNotification::class, $parameters);
+    }
+
+    public function fetchTransaction(array $parameters = [])
+    {
+        return $this->createRequest(FetchTransactionRequest::class, $parameters);
     }
 }

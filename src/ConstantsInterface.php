@@ -119,4 +119,13 @@ interface ConstantsInterface
     const RETURN_CODE_INTERNAL_ERROR = 'INTERNAL_ERROR';
     // The external payment interface returned an error.
     const RETURN_CODE_EXTERNAL_ERROR = 'EXTERNAL_ERROR';
+
+    // For profiles.
+
+    // The transaction was ok and the profile created
+    const RETURN_CODE_PROFILE_CREATED = 'PROFILE_CREATED';
+    //The transaction was ok and the profile updated
+    const RETURN_CODE_PROFILE_UPDATED = 'PROFILE_UPDATED';
+    //The transaction was ok but the profile was not stored/updated
+    const RETURN_CODE_PROFILE_ERROR = 'PROFILE_ERROR';
 }

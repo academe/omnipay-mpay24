@@ -50,4 +50,14 @@ class TokenResponse extends AbstractMpay24Response implements RedirectResponseIn
             'token' => $this->getToken(),
         ];
     }
+
+    /**
+     * Is the response a transparent redirect?
+     *
+     * @return boolean
+     */
+    public function isTransparentRedirect()
+    {
+        return true;
+    }
 }

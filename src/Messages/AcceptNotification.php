@@ -7,6 +7,9 @@ namespace Omnipay\Mpay24\Messages;
  * the results of a transaction. The notifications are not
  * signed. Pairing this push notification with a transaction
  * pull is the safest way to confirm the results.
+ *
+ * TODO: handle the response code back to mPAY24 - "OK" or "ERROR".
+ * See https://docs.mpay24.com/docs/payment-notification
  */
 
 use Omnipay\Common\Message\NotificationInterface;
@@ -18,32 +21,19 @@ use Money\Money;
 
 class AcceptNotification extends AbstractMpay24Request implements NotificationInterface, ResponseInterface 
 {
-    use ParameterTrait;
+    use ParameterTrait, NotificationValuesTrait {
+        NotificationValuesTrait::getUserField insteadof ParameterTrait;
+        NotificationValuesTrait::getLanguage insteadof ParameterTrait;
+    }
 
     protected $data;
 
     /**
      * {@inheritdoc}
      */
-    public function getTransactionReference()
-    {
-        return $this->getDataItem('MPAYTID');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTransactionId()
-    {
-        return $this->getDataItem('TID');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getTransactionStatus()
     {
-        switch ($this->getStatus()) {
+        switch ($this->getTransactionState()) {
             case static::TRANSACTION_STATE_BILLED:
                 return static::STATUS_COMPLETED;
             case static::TRANSACTION_STATE_RESERVED:
@@ -65,7 +55,7 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
      */
     public function getCode()
     {
-        return $this->getStatus();
+        return $this->getTransactionState();
     }
 
     /**
@@ -73,8 +63,8 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
      */
     public function isSuccessful()
     {
-        return $this->getStatus() === static::TRANSACTION_STATE_BILLED
-            ||  $this->getStatus() === static::TRANSACTION_STATE_RESERVED;
+        return $this->getTransactionState() === static::TRANSACTION_STATE_BILLED
+            ||  $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
     }
 
     /**
@@ -82,7 +72,7 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
      */
     public function isCancelled()
     {
-        return $this->getStatus() === static::TRANSACTION_STATE_REVERSED;
+        return $this->getTransactionState() === static::TRANSACTION_STATE_REVERSED;
     }
 
     /**
@@ -125,60 +115,5 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
         $this->data = $this->data ?: $this->getData();
 
         return isset($this->data[$name]) ? $this->data[$name] : null;
-    }
-
-    /**
-     * Also known as transaction state.
-     * See https://docs.mpay24.com/docs/transaction-states
-     */
-    public function getStatus()
-    {
-        return $this->getDataItem('STATUS');
-    }
-
-    public function getDescription()
-    {
-        return $this->getDataItem('ORDERDESC');
-    }
-
-    public function getPaymentSystem()
-    {
-        return $this->getDataItem('P_TYPE');
-    }
-
-    public function getBrand()
-    {
-        return $this->getDataItem('BRAND');
-    }
-
-    public function getUserField()
-    {
-        return $this->getDataItem('USER_FIELD');
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmountMinorUnits()
-    {
-        return (int)$this->getDataItem('PRICE');
-    }
-
-    /**
-     * @return int
-     */
-    public function getCurrencyCode()
-    {
-        return $this->getDataItem('CURRENCY');
-    }
-
-    /**
-     * @return Money
-     */
-    public function getMoney()
-    {
-        $currency = new Currency($this->getCurrencyCode());
-
-        return new Money($this->getAmountMinorUnits(), $currency);
     }
 }

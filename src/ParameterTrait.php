@@ -105,4 +105,21 @@ trait ParameterTrait
     {
         return $this->setParameter('useProfile', $value);
     }
+
+    /**
+     * @return string
+     */
+    public function getUserField()
+    {
+        return $this->getParameter('userField');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setUserField($value)
+    {
+        return $this->setParameter('userField', $value);
+    }
 }

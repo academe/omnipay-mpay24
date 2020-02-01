@@ -5,17 +5,17 @@ namespace Omnipay\Mpay24\Messages\Seamless;
 use Omnipay\Mpay24\Messages\AbstractMpay24Response;
 use Omnipay\Common\Message\RedirectResponseInterface;
 
-class CompletePurchaseResponse extends AbstractMpay24Response implements RedirectResponseInterface
+class PurchaseResponse extends AbstractMpay24Response implements RedirectResponseInterface
 {
     /**
      * {@inheritdoc}
      */
     public function isSuccessful()
     {
-        // TODO.
+        // TODO: additional checks needed for non-redirect results.
 
-        return $this->getCode()
-            && true;
+        return $this->operationSuccessful()
+            && ! $this->isRedirect();
     }
 
     /**
@@ -29,7 +29,7 @@ class CompletePurchaseResponse extends AbstractMpay24Response implements Redirec
     /**
      * {@inheritdoc}
      */
-    public function redirectMethod()
+    public function getRedirectMethod()
     {
         return 'get';
     }
@@ -45,9 +45,9 @@ class CompletePurchaseResponse extends AbstractMpay24Response implements Redirec
     /**
      * {@inheritdoc}
      */
-    public function redirectUrl()
+    public function getRedirectUrl()
     {
-        return ! empty($this->data['redirectUrl']) ? $this->data['redirectUrl'] : null;
+        return $this->getDataItem('redirectUrl');
     }
 
     /**
@@ -55,7 +55,7 @@ class CompletePurchaseResponse extends AbstractMpay24Response implements Redirec
      */
     public function getCode()
     {
-        return ! empty($this->data['returnCode']) ? $this->data['returnCode'] : null;
+        return $this->getDataItem('returnCode');
     }
 
     /**
@@ -63,7 +63,12 @@ class CompletePurchaseResponse extends AbstractMpay24Response implements Redirec
      */
     public function getOperationStatus()
     {
-        return ! empty($this->data['status']) ? $this->data['status'] : null;
+        return $this->getDataItem('status');
+    }
+
+    public function operationSuccessful()
+    {
+        return $this->getOperationStatus() === static::OPERATION_STATUS_OK;
     }
 
     /**
@@ -72,6 +77,6 @@ class CompletePurchaseResponse extends AbstractMpay24Response implements Redirec
      */
     public function getTransactionReference()
     {
-        return ! empty($this->data['transactionReference']) ? $this->data['transactionReference'] : null;
+        return $this->getDataItem('transactionReference');
     }
 }
