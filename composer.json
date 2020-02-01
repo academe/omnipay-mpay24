@@ -1,0 +1,51 @@
+{
+    "name": "academe/omnipay-mpay24",
+    "description": "mPAY24 driver for Omnipay v3",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "gateway",
+        "merchant",
+        "mpay24",
+        "omnipay",
+        "pay",
+        "payment"
+    ],
+    "authors": [
+        {
+            "name": "Jason Judge",
+            "email": "jason.judge@consil.co.uk"
+        }
+    ],
+    "homepage": "https://github.com/academe/omnipay-mpay24",
+    "minimum-stability": "dev",
+    "require": {
+        "mpay24/mpay24-php": "^4.3",
+        "omnipay/common": "^3.0.1"
+    },
+    "require-dev": {
+        "omnipay/tests": "^3.1",
+        "squizlabs/php_codesniffer": "^3",
+        "phpro/grumphp": "^0.14",
+        "phpmd/phpmd": "^2",
+        "overtrue/phplint": "^1",
+        "jakub-onderka/php-parallel-lint": "^1"
+    },
+    "autoload": {
+        "psr-4": { "Omnipay\\Mpay24\\" : "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Omnipay\\Mpay24\\Test\\": "tests/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 src/",
+        "fix-style": "phpcbf -p --standard=PSR2 src/"
+    },
+    "prefer-stable": true
+}
