@@ -19,9 +19,6 @@ class PurchaseRequest extends AbstractMpay24Request
         $type = 'TOKEN';
 
         $additional = [
-            // Required if useProfile is true
-            'customerID' => "customer123",
-            'customerName' => "Jon Doe",
             'successURL' => $this->getReturnUrl(),
             'errorURL' => $this->getErrorUrl() ?: $this->getReturnUrl(),
             'confirmationURL' => $this->getNotifyUrl(),
@@ -35,6 +32,8 @@ class PurchaseRequest extends AbstractMpay24Request
             // Optional: set if you want to create a profile
             'useProfile' => $this->getUseProfile() ? 'true' : 'false',
         ];
+
+        $card = $this->getCard();
 
         // TODO: check out other types.
         if ($type === 'TOKEN') {
@@ -51,8 +50,71 @@ class PurchaseRequest extends AbstractMpay24Request
             $order['description'] = $this->getDescription();
         }
 
+        if ($this->getClientIp()) {
+            $order['clientIP'] = $this->getClientIp();
+        }
+
+        if ($this->getUserField()) {
+            $order['userField'] = $this->getUserField();
+        }
+
+        $billingAddress = [];
+        $shippingAddress = [];
+
+        if ($card) {
+            if ($card->getName()) {
+                $additional['customerName'] = $card->getName();
+            }
+
+            if ($card->getBillingName() && $card->getBillingCountry()) {
+                // Populate billing address.
+
+                // All mandatory fields, according to the docs.
+                // However, they do appear to be optional.
+
+                $billingAddress['name'] = $card->getBillingName();
+                $billingAddress['street'] = $card->getBillingAddress1();
+                $billingAddress['street2'] = $card->getBillingAddress2();
+                $billingAddress['zip'] = $card->getBillingPostcode();
+                $billingAddress['city'] = $card->getBillingCity();
+                $billingAddress['countryCode'] = $card->getBillingCountry();
+            }
+
+            if ($card->getShippingName() && $card->getShippingCountry()) {
+                // Populate shipping address.
+
+                $shippingAddress['name'] = $card->getShippingName();
+                $shippingAddress['street'] = $card->getShippingAddress1();
+                $shippingAddress['street2'] = $card->getShippingAddress2();
+                $shippingAddress['zip'] = $card->getShippingPostcode();
+                $shippingAddress['city'] = $card->getShippingCity();
+                $shippingAddress['countryCode'] = $card->getShippingCountry();
+            }
+        }
+
+        if (! empty($billingAddress)) {
+            $order['billing'] = $billingAddress;
+        }
+
+        if (! empty($shippingAddress)) {
+            $order['shipping'] = $shippingAddress;
+        }
+
+        $shoppingCart = [];
+
+        // TODO: populate shopping cart.
+
+        if (! empty($shoppingCart)) {
+            $order['shoppingCart'] = $shoppingCart;
+        }
+
         if (! empty($order)) {
             $additional['order'] = $order;
+        }
+
+        // Required if useProfile is true
+        if ($this->getCustomerId()) {
+            $additional['customerID'] = $this->getCustomerId();
         }
 
         return [
@@ -81,11 +143,11 @@ class PurchaseRequest extends AbstractMpay24Request
         );
 
         $resultData = [
-            'status' => $result->getStatus(),
+            'operationStatus' => $result->getStatus(),
+            'returnCode' => $result->getReturnCode(),
             'errNo' => $result->getErrNo(),
             'errText' => $result->getErrText(),
             'transactionReference' => $result->getMpayTid(),
-            'returnCode' => $result->getReturnCode(),
             'redirectUrl' => $result->getLocation(),
         ];
 

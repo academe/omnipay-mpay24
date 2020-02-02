@@ -13,7 +13,35 @@ class TokenRequest extends AbstractMpay24Request
      */
     public function getData()
     {
-        return [];
+        $additional = [];
+
+        if ($this->getLanguage()) {
+            $additional['language'] = strtoupper($this->getLanguage());
+        }
+
+        if ($this->getCustomerId()) {
+            $additional['customerID'] = $this->getCustomerId();
+        }
+
+        if ($this->getProfileId()) {
+            $additional['profileID'] = $this->getProfileId();
+        }
+
+        if ($this->getTemplateSet()) {
+            $additional['templateSet'] = $this->getTemplateSet();
+        }
+
+        if ($this->getStyle()) {
+            $additional['style'] = $this->getStyle();
+        }
+
+        if ($this->getDomain()) {
+            $additional['domain'] = $this->getDomain();
+        }
+
+        return [
+            'additional' => $additional,
+        ];
     }
 
     /**
@@ -24,7 +52,7 @@ class TokenRequest extends AbstractMpay24Request
     {
         $mpay24 = $this->getMpay();
 
-        $tokenizer = $mpay24->token('CC');
+        $tokenizer = $mpay24->token('CC', $data['additional']);
 
         $tokenizerLocation = $tokenizer->getLocation();
         $token = $tokenizer->getToken();
@@ -34,6 +62,8 @@ class TokenRequest extends AbstractMpay24Request
         return new TokenResponse($this, [
             'tokenizerLocation' => $tokenizerLocation,
             'token' => $token,
+            'operationStatus' => $tokenizer->getStatus(),
+            'returnCode' => $tokenizer->getReturnCode(),
         ]);
     }
 }

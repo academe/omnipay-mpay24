@@ -63,7 +63,7 @@ class PurchaseResponse extends AbstractMpay24Response implements RedirectRespons
      */
     public function getOperationStatus()
     {
-        return $this->getDataItem('status');
+        return $this->getDataItem('operationStatus');
     }
 
     public function operationSuccessful()

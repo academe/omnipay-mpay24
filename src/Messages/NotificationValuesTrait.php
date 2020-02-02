@@ -12,6 +12,21 @@ use Money\Currency;
 
 trait NotificationValuesTrait
 {
+    public function getOperationStatus()
+    {
+        return $this->getDataItem('operationStatus');
+    }
+
+    public function getReturnCode()
+    {
+        return $this->getDataItem('returnCode');
+    }
+
+    public function getCode()
+    {
+        return $this->getReturnCode();
+    }
+
     /**
      * Transaction ID returned by mPAY24
      * {@inheritdoc}
@@ -33,11 +48,6 @@ trait NotificationValuesTrait
     public function getOperation()
     {
         return $this->getDataItem('OPERATION');
-    }
-
-    public function getOperationStatus()
-    {
-        return $this->getDataItem('operationStatus');
     }
 
     /**
