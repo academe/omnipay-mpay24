@@ -36,12 +36,12 @@ class TokenResponse extends AbstractMpay24Response implements RedirectResponseIn
 
     public function getTokenizerLocation()
     {
-        return isset($this->data['tokenizerLocation']) ? $this->data['tokenizerLocation'] : null;
+        return $this->getDataItem('tokenizerLocation');
     }
 
     public function getToken()
     {
-        return isset($this->data['token']) ? $this->data['token'] : null;
+        return $this->getDataItem('token');
     }
 
     /**
