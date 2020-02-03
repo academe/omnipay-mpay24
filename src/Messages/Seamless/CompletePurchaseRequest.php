@@ -24,7 +24,10 @@ class CompletePurchaseRequest extends AbstractMpay24Request
         // but we can at this point perform a pull request to get the result of
         // the transaction.
 
-        return []; // txn id and maybe tx ref?
+        return [
+            'transactionId' => $this->getTransactionId(),
+            'transactionReference' => $this->getTransactionReference(),
+        ];
     }
 
     /**
@@ -33,50 +36,16 @@ class CompletePurchaseRequest extends AbstractMpay24Request
      */
     public function sendData($data)
     {
-// TODO: move this to the fetchTransactionRequest
         $mpay24 = $this->getMpay();
 
-        $result = $mpay24->paymentStatusByTID($this->getTransactionId());
-/*
-array(18) {
-  ["OPERATION"]=>
-  string(12) "CONFIRMATION"
-  ["TID"]=>
-  string(7) "txn-123"
-  ["STATUS"]=>
-  string(5) "ERROR"
-  ["PRICE"]=>
-  string(3) "990"
-  ["CURRENCY"]=>
-  string(3) "EUR"
-  ["P_TYPE"]=>
-  string(2) "CC"
-  ["BRAND"]=>
-  string(4) "VISA"
-  ["MPAYTID"]=>
-  string(7) "7971316"
-  ["USER_FIELD"]=>
-  string(0) ""
-  ["ORDERDESC"]=>
-  string(10) "Test Order"
-  ["CUSTOMER"]=>
-  string(7) "Jon Doe"
-  ["CUSTOMER_EMAIL"]=>
-  string(0) ""
-  ["LANGUAGE"]=>
-  string(2) "EN"
-  ["CUSTOMER_ID"]=>
-  string(11) "customer123"
-  ["PROFILE_ID"]=>
-  string(0) ""
-  ["PROFILE_STATUS"]=>
-  string(7) "IGNORED"
-  ["FILTER_STATUS"]=>
-  string(0) ""
-  ["APPR_CODE"]=>
-  string(0) ""
-}
-*/
+        if (! empty($data['transactionId'])) {
+            $result = $mpay24->paymentStatusByTID($data['transactionId']);
+        }
+
+        if (! empty($data['transactionReference'])) {
+            $result = $mpay24->paymentStatus($data['transactionReference']);
+        }
+
         $params = $result->getParams();
 
         $params['operationStatus'] = $result->getStatus();

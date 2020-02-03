@@ -128,4 +128,21 @@ interface ConstantsInterface
     const RETURN_CODE_PROFILE_UPDATED = 'PROFILE_UPDATED';
     //The transaction was ok but the profile was not stored/updated
     const RETURN_CODE_PROFILE_ERROR = 'PROFILE_ERROR';
+
+    /**
+     * Payment systems, aka p-type.
+     */
+
+    const PTYPE_CC = 'CC';
+    const PTYPE_MAESTRO = 'MAESTRO';
+    const PTYPE_EPS = 'EPS';
+    const PTYPE_GIROPAY = 'GIROPAY';
+    const PTYPE_ELV = 'ELV';
+    const PTYPE_PAYPAL = 'PAYPAL';
+    const PTYPE_PSC = 'PSC';
+    const PTYPE_BILLPAY = 'BILLPAY';
+    const PTYPE_KLARNA = 'KLARNA';
+    const PTYPE_PAYOLUTION = 'PAYOLUTION';
+    const PTYPE_SOFORT = 'SOFORT';
+    const PTYPE_MASTERPASS = 'MASTERPASS';
 }

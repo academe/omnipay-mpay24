@@ -4,6 +4,7 @@ namespace Omnipay\Mpay24;
 
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
+use Omnipay\Mpay24\Messages\FetchTransactionRequest;
 use Omnipay\Mpay24\Messages\Redirect\PurchaseRequest;
 use Omnipay\Mpay24\Messages\Redirect\CompletePurchaseRequest;
 use Omnipay\Mpay24\Messages\AcceptNotification;
@@ -56,5 +57,10 @@ class RedirectGateway extends AbstractGateway
     public function acceptNotification(array $parameters = [])
     {
         return $this->createRequest(AcceptNotification::class, $parameters);
+    }
+
+    public function fetchTransaction(array $parameters = [])
+    {
+        return $this->createRequest(FetchTransactionRequest::class, $parameters);
     }
 }

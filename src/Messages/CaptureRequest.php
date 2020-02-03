@@ -3,13 +3,14 @@
 namespace Omnipay\Mpay24\Messages;
 
 /**
- * Fetch a transaction by 
+ * Capture an authorized transaction.
+ * Support for authorize vs purchase, is set account-wide in the mPAY24 portal.
  */
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
 use Mpay24\Mpay24Order;
 
-class FetchTransactionRequest extends AbstractMpay24Request
+class CaptureRequest extends AbstractMpay24Request
 {
     /**
      * @return array
@@ -17,11 +18,9 @@ class FetchTransactionRequest extends AbstractMpay24Request
      */
     public function getData()
     {
-        // One or the other is required.
-        // TODO: do some validation.
+        $this->validate('transactionReference');
 
         return [
-            'transactionId' => $this->getTransactionId(),
             'transactionReference' => $this->getTransactionReference(),
         ];
     }
@@ -34,19 +33,13 @@ class FetchTransactionRequest extends AbstractMpay24Request
     {
         $mpay24 = $this->getMpay();
 
-        if (! empty($data['transactionId'])) {
-            $result = $mpay24->paymentStatusByTID($data['transactionId']);
-        }
-
-        if (! empty($data['transactionReference'])) {
-            $result = $mpay24->paymentStatus($data['transactionReference']);
-        }
+        $result = $mpay24->capture($data['transactionReference']);
 
         $params = $result->getParams();
 
         $params['operationStatus'] = $result->getStatus();
         $params['returnCode'] = $result->getReturnCode();
 
-        return new FetchTransactionResponse($this, $params);
+        return new CaptureResponse($this, $params);
     }
 }

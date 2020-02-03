@@ -102,7 +102,17 @@ class PurchaseRequest extends AbstractMpay24Request
 
         $shoppingCart = [];
 
-        // TODO: populate shopping cart.
+        // Populate shopping cart.
+        // For details of what is supported, see:
+        // https://docs.mpay24.com/docs/soap-interface#section-shopping-cart
+
+        $items = $this->getItems();
+
+        if (! empty($items) && count($items) > 0) {
+            foreach ($items->all() as $item) {
+                // TODO
+            }
+        }
 
         if (! empty($shoppingCart)) {
             $order['shoppingCart'] = $shoppingCart;

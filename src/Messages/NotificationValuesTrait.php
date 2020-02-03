@@ -4,6 +4,9 @@ namespace Omnipay\Mpay24\Messages;
 
 /**
  * Data provided is the raw data from the API, with upper-case keys.
+ * TODO: this is also known as the "transaction response", and is shared
+ * by notifications, payments, capture, fetchTransaction etc.
+ * Some refactoring may help simplify.
  */
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Response;
