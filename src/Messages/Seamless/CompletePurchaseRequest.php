@@ -19,10 +19,15 @@ class CompletePurchaseRequest extends AbstractMpay24Request
     {
         // The result will be passed by query parameters, and that may be useful
         // for displaying a message on the front-end. However, that cannot be
-        // trused.
+        // trusted.
         // A notification will be sent to the merchant site (a push result),
         // but we can at this point perform a pull request to get the result of
         // the transaction.
+
+        if (empty($this->getTransactionId()) && empty($this->getTransactionReference())) {
+            $this->validate('transactionId');
+            $this->validate('transactionReference');
+        }
 
         return [
             'transactionId' => $this->getTransactionId(),
@@ -32,7 +37,7 @@ class CompletePurchaseRequest extends AbstractMpay24Request
 
     /**
      * @return array
-     * @throws PurchaseReponse
+     * @throws FetchTransactionResponse
      */
     public function sendData($data)
     {
@@ -40,9 +45,7 @@ class CompletePurchaseRequest extends AbstractMpay24Request
 
         if (! empty($data['transactionId'])) {
             $result = $mpay24->paymentStatusByTID($data['transactionId']);
-        }
-
-        if (! empty($data['transactionReference'])) {
+        } elseif (! empty($data['transactionReference'])) {
             $result = $mpay24->paymentStatus($data['transactionReference']);
         }
 

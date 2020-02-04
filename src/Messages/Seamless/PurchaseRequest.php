@@ -2,6 +2,7 @@
 
 namespace Omnipay\Mpay24\Messages\Seamless;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
 use Mpay24\Mpay24Order;
 
@@ -207,6 +208,8 @@ class PurchaseRequest extends AbstractMpay24Request
             // TODO
         }
 
-        // TODO: throw exception here: unkown or unsupported payment type.
+        // TODO: throw exception here: unknown or unsupported payment type.
+
+        throw new InvalidRequestException(sprintf('Unknown paymentType "%s"', $ptype);
     }
 }

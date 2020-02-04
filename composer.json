@@ -21,7 +21,8 @@
     "minimum-stability": "dev",
     "require": {
         "mpay24/mpay24-php": "^4.3",
-        "omnipay/common": "^3.0.1"
+        "omnipay/common": "^3.0.1",
+        "php": ">=7.2"
     },
     "require-dev": {
         "omnipay/tests": "^3.1",

@@ -10,6 +10,7 @@ class PurchaseRequest extends AbstractMpay24Request
     /**
      * @return array
      * @throws InvalidRequestException
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function getData()
     {

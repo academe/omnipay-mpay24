@@ -46,7 +46,7 @@ class TokenRequest extends AbstractMpay24Request
 
     /**
      * @param array $data
-     * @return ResponseInterface|PurchaseResponse
+     * @return TokenResponse
      */
     public function sendData($data)
     {
