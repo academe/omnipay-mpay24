@@ -9,7 +9,7 @@ use Omnipay\Mpay24\Messages\Redirect\PurchaseRequest;
 use Omnipay\Mpay24\Messages\Redirect\CompletePurchaseRequest;
 use Omnipay\Mpay24\Messages\AcceptNotification;
 
-class RedirectGateway extends AbstractGateway
+class RedirectGateway extends AbstractGateway implements ConstantsInterface
 {
     use ParameterTrait;
 

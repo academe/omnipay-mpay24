@@ -110,7 +110,7 @@ $response = $request->send();
 ```
 
 If the payment request is succcessful, then a redirect is likely
-to complete 3D Secure actions:
+to be needed to complete 3D Secure actions:
 
 ```php
 if (! $response->isSuccessful() && $response->isRedirect()) {
@@ -119,7 +119,8 @@ if (! $response->isSuccessful() && $response->isRedirect()) {
 }
 ```
 
-After 3D Secure is completed, you will be returned to the `/complete` endpoint:
+After 3D Secure is completed, you will be returned to the `/complete` endpoint
+where you need to fetch the results of the transation:
 
 ```
 use Omnipay\Mpay24\Redirect;

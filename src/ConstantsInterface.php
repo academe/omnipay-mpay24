@@ -133,6 +133,7 @@ interface ConstantsInterface
      * Payment systems, aka p-type.
      */
 
+    const PTYPE_TOKEN = 'TOKEN';
     const PTYPE_CC = 'CC';
     const PTYPE_MAESTRO = 'MAESTRO';
     const PTYPE_EPS = 'EPS';

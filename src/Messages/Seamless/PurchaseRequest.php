@@ -16,29 +16,13 @@ class PurchaseRequest extends AbstractMpay24Request
         // Collect together all the details of the payment to be made
         // with the token.
 
-        $type = 'TOKEN';
-
         $additional = [
             'successURL' => $this->getReturnUrl(),
             'errorURL' => $this->getErrorUrl() ?: $this->getReturnUrl(),
             'confirmationURL' => $this->getNotifyUrl(),
         ];
 
-        $payment = [
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrency(),
-            // Optional: set to true if you want to do a manual clearing
-            'manualClearing' => $this->getManualClearing() ? 'true' : 'false',
-            // Optional: set if you want to create a profile
-            'useProfile' => $this->getUseProfile() ? 'true' : 'false',
-        ];
-
         $card = $this->getCard();
-
-        // TODO: check out other types.
-        if ($type === 'TOKEN') {
-            $payment['token'] = $this->getToken();
-        }
 
         if (! empty($this->getLanguage())) {
             $additional['language'] = strtoupper($this->getLanguage());
@@ -128,9 +112,9 @@ class PurchaseRequest extends AbstractMpay24Request
         }
 
         return [
-            'type' => $type,
+            'ptype' => $this->getPaymentType(),
             'tid' => $this->getTransactionId(),
-            'payment' => $payment,
+            'payment' => $this->getPaymentData(),
             'additional' => $additional,
         ];
     }
@@ -146,7 +130,7 @@ class PurchaseRequest extends AbstractMpay24Request
         $mpay24 = $this->getMpay();
 
         $result = $mpay24->payment(
-            $data['type'],
+            $data['ptype'],
             $data['tid'],
             $data['payment'],
             $data['additional']
@@ -170,5 +154,59 @@ class PurchaseRequest extends AbstractMpay24Request
     protected function getServerRequest()
     {
         return $this->httpRequest;
+    }
+
+    /**
+     * Contstruct the payment data.
+     */
+    protected function getPaymentData()
+    {
+        $ptype = $this->getPaymentType();
+        $brand = $this->getBrand();
+
+        $payment = [
+            'amount' => $this->getAmountInteger(),
+            'currency' => $this->getCurrency(),
+            // Optional: set to true if you want to do a manual clearing
+            'manualClearing' => $this->getManualClearing() ? 'true' : 'false',
+            // Optional: set if you want to create a profile
+            'useProfile' => $this->getUseProfile() ? 'true' : 'false',
+        ];
+
+        if ($ptype === static::PTYPE_TOKEN) {
+            $this->validate('token');
+
+            $payment['token'] = $this->getToken();
+
+            return $payment;
+        }
+
+        if ($ptype === static::PTYPE_CC) {
+            $card = $this->getCard();
+
+            $this->validate('card');
+            $card->validate();
+
+            $payment['brand'] = 'VISA'; // FIXME: map from OmniPay brand to mPAY24 brand
+            $payment['identifier'] = $card->getNumber();
+            $payment['expiry'] = $card->getExpiryDate('ym');
+            $payment['cvv'] = $card->getCvv();
+            $payment['auth3DS'] = 'true'; // FIXME: make this an option
+
+            return $payment;
+        }
+
+        if ($ptype === static::PTYPE_PAYPAL) {
+            $payment['commit'] = (bool)$this->getCommit();
+            $payment['custom'] = $this->getUserField();
+
+            return $payment;
+        }
+
+        if ($ptype === static::PTYPE_KLARNA) {
+            // TODO
+        }
+
+        // TODO: throw exception here: unkown or unsupported payment type.
     }
 }

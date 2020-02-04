@@ -207,4 +207,56 @@ trait ParameterTrait
     {
         return $this->setParameter('domain', $value);
     }
+
+    /**
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return $this->getParameter('paymentType');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setPaymentType($value)
+    {
+        return $this->setParameter('paymentType', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->getParameter('brand');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setBrand($value)
+    {
+        return $this->setParameter('brand', $value);
+    }
+
+    /**
+     * Used for PayPal Express Checkout.
+     * @return string
+     */
+    public function getCommit()
+    {
+        return $this->getParameter('commit');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setCommit($value)
+    {
+        return $this->setParameter('commit', $value);
+    }
 }

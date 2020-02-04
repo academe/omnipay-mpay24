@@ -23,6 +23,8 @@ class SeamlessGateway extends RedirectGateway
         $parameters['manualClearing'] = false;
         $parameters['useProfile'] = false;
 
+        $parameters['paymentType'] = static::PTYPE_TOKEN;
+
         return $parameters;
     }
 
