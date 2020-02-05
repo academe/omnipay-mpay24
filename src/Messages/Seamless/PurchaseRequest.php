@@ -205,11 +205,50 @@ class PurchaseRequest extends AbstractMpay24Request
         }
 
         if ($ptype === static::PTYPE_KLARNA) {
-            // TODO
+            $payment['brand'] = 'INVOICE';
+            //$payment['brand'] = 'HP';
+            $payment['personalNumber'] = 'tbc';
+
+            $payment['pClass'] = '';
+
+            return $payment;
         }
 
-        // TODO: throw exception here: unknown or unsupported payment type.
+        if ($ptype === static::PTYPE_ELV) {
+            // See https://docs.mpay24.com/docs/direct-debit
+            // Required: IP address, billing address (with name), follow SEPA standing orders
 
-        throw new InvalidRequestException(sprintf('Unknown paymentType "%s"', $ptype);
+            $payment['brand'] = 'BILLPAY'; // FIXME
+
+            return $payment;
+        }
+
+        if ($ptype === static::PTYPE_EPS) {
+            if (! $this->getBankId() && ! $this->getBic()) {
+                throw new InvalidRequestException('Either the bankId or bic parameter is required');
+            }
+
+            if ($this->getBankId()) {
+                // Austrian bank.
+
+                $payment['brand'] = $this->getBrand() ?: static::BRAND_EPS;
+                $payment['bankID'] = $this->getBankId();
+            } elseif ($this->getBic()) {
+                // International bank.
+                // In testing, the BIC only worked with the EPS brand, which contradicts the
+                // documentation, so an override is provided here.
+
+                $payment['brand'] = $this->getBrand() ?: static::BRAND_INTERNATIONAL;
+                $payment['bic'] = $this->getBic();
+            }
+
+            return $payment;
+        }
+
+        // Exception: unknown or unsupported payment type.
+
+        throw new InvalidRequestException(
+            sprintf('Unknown paymentType "%s"', $ptype)
+        );
     }
 }

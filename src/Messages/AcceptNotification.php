@@ -24,6 +24,9 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
     use ParameterTrait, NotificationValuesTrait {
         NotificationValuesTrait::getUserField insteadof ParameterTrait;
         NotificationValuesTrait::getLanguage insteadof ParameterTrait;
+        NotificationValuesTrait::getPaymentType insteadof ParameterTrait;
+        NotificationValuesTrait::getCustomerId insteadof ParameterTrait;
+        NotificationValuesTrait::getProfileId insteadof ParameterTrait;
     }
 
     protected $data;
@@ -48,6 +51,8 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
      */
     public function getMessage()
     {
+        // There are no real messages, just codes.
+        return $this->getCode();
     }
 
     /**
@@ -65,6 +70,11 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
     {
         return $this->getTransactionState() === static::TRANSACTION_STATE_BILLED
             ||  $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
+    }
+
+    public function isPending()
+    {
+        return $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
     }
 
     /**

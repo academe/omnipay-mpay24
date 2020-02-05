@@ -259,4 +259,59 @@ trait ParameterTrait
     {
         return $this->setParameter('commit', $value);
     }
+
+    /**
+     * Used for EPS checkouts.
+     * Austrian bank ID.
+     * @return string
+     */
+    public function getBankId()
+    {
+        return $this->getParameter('bankId');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setBankId($value)
+    {
+        return $this->setParameter('bankId', $value);
+    }
+
+    /**
+     * Used for EPS checkouts.
+     * @return string
+     */
+    public function getBic()
+    {
+        return $this->getParameter('bic');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setBic($value)
+    {
+        return $this->setParameter('bic', $value);
+    }
+
+    /**
+     * Used for Direct Debit (ELV) checkouts.
+     * @return string
+     */
+    public function getIban()
+    {
+        return $this->getParameter('iban');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setIban($value)
+    {
+        return $this->setParameter('iban', $value);
+    }
 }

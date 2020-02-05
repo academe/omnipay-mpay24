@@ -15,6 +15,13 @@ interface ConstantsInterface
     const OPERATION_STATUS_ERROR = 'ERROR';
 
     /**
+     * For notification handler.
+     */
+
+    const NOTIFICATION_RESPONSE_OK      = 'OK';
+    const NOTIFICATION_RESPONSE_ERROR   = 'ERROR';
+
+    /**
      * Transaction states.
      * See https://docs.mpay24.com/docs/transaction-states
      */
@@ -130,20 +137,45 @@ interface ConstantsInterface
     const RETURN_CODE_PROFILE_ERROR = 'PROFILE_ERROR';
 
     /**
-     * Payment systems, aka p-type.
+     * Payment systems, aka p-type, or payment type.
      */
 
-    const PTYPE_TOKEN = 'TOKEN';
-    const PTYPE_CC = 'CC';
-    const PTYPE_MAESTRO = 'MAESTRO';
-    const PTYPE_EPS = 'EPS';
-    const PTYPE_GIROPAY = 'GIROPAY';
-    const PTYPE_ELV = 'ELV';
-    const PTYPE_PAYPAL = 'PAYPAL';
-    const PTYPE_PSC = 'PSC';
-    const PTYPE_BILLPAY = 'BILLPAY';
-    const PTYPE_KLARNA = 'KLARNA';
-    const PTYPE_PAYOLUTION = 'PAYOLUTION';
-    const PTYPE_SOFORT = 'SOFORT';
-    const PTYPE_MASTERPASS = 'MASTERPASS';
+    const PTYPE_TOKEN       = 'TOKEN';
+    const PTYPE_CC          = 'CC';
+    const PTYPE_MAESTRO     = 'MAESTRO';
+    const PTYPE_EPS         = 'EPS';
+    const PTYPE_GIROPAY     = 'GIROPAY';
+    const PTYPE_ELV         = 'ELV';
+    const PTYPE_PAYPAL      = 'PAYPAL';
+    const PTYPE_PSC         = 'PSC';
+    const PTYPE_BILLPAY     = 'BILLPAY';
+    const PTYPE_KLARNA      = 'KLARNA';
+    const PTYPE_PAYOLUTION  = 'PAYOLUTION';
+    const PTYPE_SOFORT      = 'SOFORT';
+    const PTYPE_MASTERPASS  = 'MASTERPASS';
+
+    /**
+     * Brands.
+     */
+
+    // Hire purchase for BILLPAY and KLARNA
+    const BRAND_HP          = 'HP';
+    const BRAND_INVOICE     = 'INVOICE';
+    // For CC
+    const BRAND_AMEX        = 'AMEX';
+    const BRAND_DINERS      = 'DINERS';
+    const BRAND_JCB         = 'JCB';
+    const BRAND_VISA        = 'VISA';
+    const BRAND_MASTERCARD  = 'MASTERCARD';
+    // For ELV (direct debit)
+    const BRAND_ATOS        = 'ATOS';
+    const BRAND_HOBEX_AT    = 'HOBEX-AT';
+    const BRAND_HOBEX_DE    = 'HOBEX-DE';
+    const BRAND_HOBEX_NL    = 'HOBEX-NL';
+    const BRAND_BILLPAY     = 'BILLPAY';
+    const BRAND_HEIDELPAY   = 'HEIDELPAY';
+    const BRAND_B4P         = 'B4P';
+    // For EPS. EPS for Austrian banks
+    const BRAND_EPS         = 'EPS';
+    const BRAND_INTERNATIONAL   = 'INTERNATIONAL';
 }
