@@ -15,4 +15,26 @@ abstract class AbstractMpay24Response extends AbstractResponse implements Consta
         return isset($this->data[$name]) ? $this->data[$name] : null;
     }
 
+    public function getErrNo()
+    {
+        return $this->getDataItem('errNo');
+    }
+
+    public function getErrText()
+    {
+        return $this->getDataItem('errText');
+    }
+
+    public function getReturnCode()
+    {
+        return $this->getDataItem('returnCode');
+    }
+
+    /**
+     * The operation see OPERATION_STATUS_* constants.
+     */
+    public function getOperationStatus()
+    {
+        return $this->getDataItem('operationStatus');
+    }
 }

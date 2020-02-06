@@ -53,17 +53,17 @@ class PurchaseResponse extends AbstractMpay24Response implements RedirectRespons
     /**
      * {@inheritdoc}
      */
-    public function getCode()
+    public function getMessage()
     {
-        return $this->getDataItem('returnCode');
+        return $this->getErrText() ?: $this->getReturnCode();
     }
 
     /**
-     * The operation see OPERATION_STATUS_* constants.
+     * {@inheritdoc}
      */
-    public function getOperationStatus()
+    public function getCode()
     {
-        return $this->getDataItem('operationStatus');
+        return $this->getReturnCode();
     }
 
     public function operationSuccessful()

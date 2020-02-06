@@ -147,6 +147,8 @@ interface ConstantsInterface
     const PTYPE_GIROPAY     = 'GIROPAY';
     const PTYPE_ELV         = 'ELV';
     const PTYPE_PAYPAL      = 'PAYPAL';
+    const PTYPE_PB          = 'PB';
+    const PTYPE_QUICK       = 'QUICK';
     const PTYPE_PSC         = 'PSC';
     const PTYPE_BILLPAY     = 'BILLPAY';
     const PTYPE_KLARNA      = 'KLARNA';
@@ -178,4 +180,13 @@ interface ConstantsInterface
     // For EPS. EPS for Austrian banks
     const BRAND_EPS         = 'EPS';
     const BRAND_INTERNATIONAL   = 'INTERNATIONAL';
+    // For PSC (redirect payment systems)
+    const BRAND_PSC         = 'PSC';
+    const BRAND_QUICK       = 'QUICK';
+
+    /**
+     * Modes for PayPal Express
+     */
+
+    const MODE_READWRITE = 'READWRITE';
 }

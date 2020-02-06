@@ -9,6 +9,7 @@ use Omnipay\Mpay24\Messages\Seamless\TokenRequest;
 use Omnipay\Mpay24\Messages\Seamless\PurchaseRequest;
 use Omnipay\Mpay24\Messages\Seamless\CompletePurchaseRequest;
 use Omnipay\Mpay24\Messages\CaptureRequest;
+use Omnipay\Mpay24\Messages\PaymentMethodsRequest;
 use Omnipay\Mpay24\Messages\AcceptNotification;
 
 class SeamlessGateway extends RedirectGateway
@@ -50,7 +51,25 @@ class SeamlessGateway extends RedirectGateway
      * @param  array $parameters
      * @return PurchaseRequest
      */
+    public function authorize(array $parameters = [])
+    {
+        return $this->createRequest(PurchaseRequest::class, $parameters);
+    }
+
+    /**
+     * @param  array $parameters
+     * @return PurchaseRequest
+     */
     public function completePurchase(array $parameters = [])
+    {
+        return $this->createRequest(CompletePurchaseRequest::class, $parameters);
+    }
+
+    /**
+     * @param  array $parameters
+     * @return PurchaseRequest
+     */
+    public function completeAuthorize(array $parameters = [])
     {
         return $this->createRequest(CompletePurchaseRequest::class, $parameters);
     }
@@ -68,5 +87,10 @@ class SeamlessGateway extends RedirectGateway
     public function capture(array $parameters = [])
     {
         return $this->createRequest(CaptureRequest::class, $parameters);
+    }
+
+    public function paymentMethods(array $parameters = [])
+    {
+        return $this->createRequest(PaymentMethodsRequest::class, $parameters);
     }
 }

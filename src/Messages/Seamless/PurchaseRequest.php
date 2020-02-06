@@ -5,6 +5,8 @@ namespace Omnipay\Mpay24\Messages\Seamless;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
 use Mpay24\Mpay24Order;
+use DateTimeInterface;
+use DateTime;
 
 class PurchaseRequest extends AbstractMpay24Request
 {
@@ -57,11 +59,16 @@ class PurchaseRequest extends AbstractMpay24Request
                 // All mandatory fields, according to the docs.
                 // However, they do appear to be optional.
 
+                if ($this->getMode()) {
+                    $billingAddress['mode'] = $this->getMode();
+                }
+
                 $billingAddress['name'] = $card->getBillingName();
                 $billingAddress['street'] = $card->getBillingAddress1();
                 $billingAddress['street2'] = $card->getBillingAddress2();
                 $billingAddress['zip'] = $card->getBillingPostcode();
                 $billingAddress['city'] = $card->getBillingCity();
+                $billingAddress['state'] = $card->getBillingState();
                 $billingAddress['countryCode'] = $card->getBillingCountry();
             }
 
@@ -73,6 +80,7 @@ class PurchaseRequest extends AbstractMpay24Request
                 $shippingAddress['street2'] = $card->getShippingAddress2();
                 $shippingAddress['zip'] = $card->getShippingPostcode();
                 $shippingAddress['city'] = $card->getShippingCity();
+                $shippingAddress['state'] = $card->getShippingState();
                 $shippingAddress['countryCode'] = $card->getShippingCountry();
             }
         }
@@ -204,7 +212,7 @@ class PurchaseRequest extends AbstractMpay24Request
             return $payment;
         }
 
-        if ($ptype === static::PTYPE_KLARNA) {
+        /*if ($ptype === static::PTYPE_KLARNA) {
             $payment['brand'] = 'INVOICE';
             //$payment['brand'] = 'HP';
             $payment['personalNumber'] = 'tbc';
@@ -212,13 +220,46 @@ class PurchaseRequest extends AbstractMpay24Request
             $payment['pClass'] = '';
 
             return $payment;
-        }
+        }*/
 
         if ($ptype === static::PTYPE_ELV) {
             // See https://docs.mpay24.com/docs/direct-debit
-            // Required: IP address, billing address (with name), follow SEPA standing orders
+            // Required: IP address, billing address (with name), follow SEPA standing orders.
+            // TODO: validate that billing address is supplied for Heidelpay.
 
-            $payment['brand'] = 'BILLPAY'; // FIXME
+            $this->validate('brand');
+
+            $brand = $this->getBrand();
+
+            $payment['brand'] = $brand;
+            $payment['iban'] = $this->getIban();
+            $payment['bic'] = $this->getBic();
+
+            if ($brand === static::BRAND_HOBEX_AT
+                || $brand === static::BRAND_HOBEX_DE
+                || $brand === static::BRAND_HOBEX_NL
+                || $brand === static::BRAND_B4P
+                || $brand === static::BRAND_HEIDELPAY
+            ) {
+                $this->validate('mandateId');
+                $this->validate('dateOfSignature');
+            }
+
+            if (is_string($this->getDateOfSignature())) {
+                $dateOfSignature = new DateTime($this->getDateOfSignature());
+            }
+
+            if ($this->getDateOfSignature() instanceof DateTimeInterface) {
+                $dateOfSignature = $this->getDateOfSignature();
+            }
+
+            if (! empty($dateOfSignature)) {
+                $payment['dateOfSignature'] = $dateOfSignature->format('Y-m-d');
+            }
+
+            if ($this->getMandateId()) {
+                $payment['mandateID'] = $this->getMandateId();
+            }
 
             return $payment;
         }

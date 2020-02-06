@@ -261,6 +261,24 @@ trait ParameterTrait
     }
 
     /**
+     * Used for PayPal Express Checkout.
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->getParameter('mode');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setMode($value)
+    {
+        return $this->setParameter('mode', $value);
+    }
+
+    /**
      * Used for EPS checkouts.
      * Austrian bank ID.
      * @return string
@@ -313,5 +331,39 @@ trait ParameterTrait
     public function setIban($value)
     {
         return $this->setParameter('iban', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMandateId()
+    {
+        return $this->getParameter('mandateId');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setMandateId($value)
+    {
+        return $this->setParameter('mandateId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateOfSignature()
+    {
+        return $this->getParameter('dateOfSignature');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setDateOfSignature($value)
+    {
+        return $this->setParameter('dateOfSignature', $value);
     }
 }
