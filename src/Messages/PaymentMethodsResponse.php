@@ -12,6 +12,11 @@ class PaymentMethodsResponse extends AbstractMpay24Response
 {
     use NotificationValuesTrait;
 
+    protected $paymentTypes;
+    protected $brands;
+    protected $descriptions;
+    protected $paymentMethodIds;
+
     public function getPaymentTypes()
     {
         return $this->getDataItem('paymentTypes') ?: [];

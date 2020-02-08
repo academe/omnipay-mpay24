@@ -54,6 +54,16 @@ interface ConstantsInterface
     // The payout was successful.
     // The amount will be transfered to the customer.
     const TRANSACTION_STATE_WITHDRAWN = 'WITHDRAWN';
+    // Other states documented in othee places:
+    const TRANSACTION_STATE_INIT = 'INIT';
+    const TRANSACTION_STATE_AUTHORIZE = 'AUTHORIZE';
+    const TRANSACTION_STATE_REDIRECTED = 'REDIRECTED';
+    const TRANSACTION_STATE_CALLBACK = 'CALLBACK';
+    const TRANSACTION_STATE_EXECUTE = 'EXECUTE';
+    const TRANSACTION_STATE_REVOKE = 'REVOKE';
+    const TRANSACTION_STATE_REJECT = 'REJECT';
+    const TRANSACTION_STATE_ARCHIVED = 'ARCHIVED';
+    const TRANSACTION_STATE_WITHDRAW = 'WITHDRAW';
 
     /**
      * Return codes to instructions.
@@ -183,10 +193,28 @@ interface ConstantsInterface
     // For PSC (redirect payment systems)
     const BRAND_PSC         = 'PSC';
     const BRAND_QUICK       = 'QUICK';
+    // Sofort.
+    const BRAND_SOFORT      = 'SOFORT';
 
     /**
      * Modes for PayPal Express
      */
 
     const MODE_READWRITE = 'READWRITE';
+
+    /**
+     * Person gender
+     */
+
+    const GENDER_MALE = 'MALE';
+    const GENDER_FEMALE = 'FEMALE';
+
+    /**
+     * Example CSS Names.
+     * Use CSS_NAME_MODERN as the current responsive template.
+     */
+
+    const CSS_NAME_WEB = 'WEB';
+    const CSS_NAME_MOBILE = 'MOBILE';
+    const CSS_NAME_MODERN = 'MODERN';
 }

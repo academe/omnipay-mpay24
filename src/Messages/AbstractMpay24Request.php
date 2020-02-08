@@ -20,9 +20,12 @@ abstract class AbstractMpay24Request extends AbstractRequest implements Constant
         $mpay24config = new Mpay24Config();
 
         $mpay24config->useTestSystem($this->getTestMode());
+        $mpay24config->setDebug((bool)$this->getDebug());
         $mpay24config->setMerchantId($this->getMerchantId());
         $mpay24config->setSoapPassword($this->getPassword());
 
-        return new Mpay24($mpay24config);
+        $mpay24 = new Mpay24($mpay24config);
+
+        return $mpay24;
     }
 }

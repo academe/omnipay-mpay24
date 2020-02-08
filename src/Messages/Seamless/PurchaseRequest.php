@@ -190,7 +190,7 @@ class PurchaseRequest extends AbstractMpay24Request
             return $payment;
         }
 
-        if ($ptype === static::PTYPE_CC) {
+        /*if ($ptype === static::PTYPE_CC) {
             $card = $this->getCard();
 
             $this->validate('card');
@@ -203,7 +203,7 @@ class PurchaseRequest extends AbstractMpay24Request
             $payment['auth3DS'] = 'true'; // FIXME: make this an option
 
             return $payment;
-        }
+        }*/
 
         if ($ptype === static::PTYPE_PAYPAL) {
             $payment['commit'] = (bool)$this->getCommit();
@@ -212,15 +212,22 @@ class PurchaseRequest extends AbstractMpay24Request
             return $payment;
         }
 
-        /*if ($ptype === static::PTYPE_KLARNA) {
-            $payment['brand'] = 'INVOICE';
-            //$payment['brand'] = 'HP';
-            $payment['personalNumber'] = 'tbc';
+        if ($ptype === static::PTYPE_SOFORT) {
+            return $payment;
+        }
 
-            $payment['pClass'] = '';
+        if ($ptype === static::PTYPE_KLARNA) {
+            $this->validate('brand');
+            $this->validate('personalNumber');
+
+            $payment['brand'] = $this->getBrand();
+
+            $payment['personalNumber'] = $this->getPersonalNumber();
+
+            $payment['pClass'] = $this->getPClass();
 
             return $payment;
-        }*/
+        }
 
         if ($ptype === static::PTYPE_ELV) {
             // See https://docs.mpay24.com/docs/direct-debit

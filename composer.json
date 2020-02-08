@@ -20,7 +20,7 @@
     "homepage": "https://github.com/academe/omnipay-mpay24",
     "minimum-stability": "dev",
     "require": {
-        "mpay24/mpay24-php": "^4.3",
+        "mpay24/mpay24-php": "^5.0",
         "omnipay/common": "^3.0.1",
         "php": ">=7.2"
     },

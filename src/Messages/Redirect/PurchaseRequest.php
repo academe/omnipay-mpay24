@@ -20,6 +20,7 @@ class PurchaseRequest extends AbstractMpay24Request
             'tid' => $this->getTransactionId(),
             'description' => $this->getDescription(),
             'language' => strtoupper($this->getLanguage()),
+            'templateSet' => $this->getTemplateSet(),
             'successUrl' => $this->getReturnUrl(),
             'errorUrl' => $this->getErrorUrl() ?: $this->getReturnUrl(),
             'confirmationUrl' => $this->getNotifyUrl(),
@@ -42,7 +43,22 @@ class PurchaseRequest extends AbstractMpay24Request
             $mdxi->Order->Currency = $data['currency'];
         }
 
-// See for more details: https://docs.mpay24.com/docs/working-with-the-mpay24-php-sdk-redirect-integration
+        if (! empty($data['templateSet'])) {
+            $mdxi->Order->TemplateSet = $data['templateSet'];
+        }
+
+        if (! empty($data['cssName'])) {
+            $mdxi->Order->setCSSName($data['cssName']);
+        }
+
+        // Only used if payment types need to be pre-selected.
+        // Not implemented, but example below.
+        // $mdxi->Order->PaymentTypes->setEnable('true');
+        // $mdxi->Order->PaymentTypes->Payment(1)->setType('CC');
+        // $mdxi->Order->PaymentTypes->Payment(1)->setBrand('VISA');
+
+        // See for more details:
+        // https://docs.mpay24.com/docs/working-with-the-mpay24-php-sdk-redirect-integration
 
         $mdxi->Order->URL->Success      = $data['successUrl'];
         $mdxi->Order->URL->Error        = $data['errorUrl'];

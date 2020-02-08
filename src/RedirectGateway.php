@@ -26,10 +26,11 @@ class RedirectGateway extends AbstractGateway implements ConstantsInterface
      */
     public function getDefaultParameters()
     {
-        return array(
+        return [
             'merchantId' => '',
             'password' => '',
-        );
+            'templateSet' => ConstantsInterface::CSS_NAME_MODERN,
+        ];
     }
 
     /**

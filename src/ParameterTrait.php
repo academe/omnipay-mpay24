@@ -177,6 +177,23 @@ trait ParameterTrait
     /**
      * @return string
      */
+    public function getCssName()
+    {
+        return $this->getParameter('cssName');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setCssName($value)
+    {
+        return $this->setParameter('cssName', $value);
+    }
+
+    /**
+     * @return string
+     */
     public function getStyle()
     {
         return $this->getParameter('style');
@@ -365,5 +382,56 @@ trait ParameterTrait
     public function setDateOfSignature($value)
     {
         return $this->setParameter('dateOfSignature', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDebug()
+    {
+        return $this->getParameter('debug');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setDebug($value)
+    {
+        return $this->setParameter('debug', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPersonalNumber()
+    {
+        return $this->getParameter('personalNumber');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setPersonalNumber($value)
+    {
+        return $this->setParameter('personalNumber', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPClass()
+    {
+        return $this->getParameter('pClass');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setPClass($value)
+    {
+        return $this->setParameter('pClass', $value);
     }
 }
