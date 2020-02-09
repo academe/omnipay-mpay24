@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\Mpay24\Messages\Redirect;
+namespace Omnipay\Mpay24\Messages\PaymentPage;
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Response;
 use Omnipay\Common\Message\RedirectResponseInterface;

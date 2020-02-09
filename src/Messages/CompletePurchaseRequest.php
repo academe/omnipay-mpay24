@@ -1,12 +1,7 @@
 <?php
 
-namespace Omnipay\Mpay24\Messages\Seamless;
+namespace Omnipay\Mpay24\Messages;
 
-// array(5) { ["result"]=> string(7) "success" ["TID"]=> string(7) "txn-123" ["LANGUAGE"]=> string(2) "EN" ["USER_FIELD"]=> string(0) "" ["BRAND"]=> string(4) "VISA" }
-// array(7) { ["result"]=> string(5) "error" ["TID"]=> string(7) "txn-123" ["USER_FIELD"]=> string(0) "" ["ERRTEXT"]=> string(0) "" ["EXTERNALSTATUS"]=> string(0) "" ["BRAND"]=> string(4) "VISA" ["LANGUAGE"]=> string(2) "EN" } 
-
-use Omnipay\Mpay24\Messages\AbstractMpay24Request;
-use Omnipay\Mpay24\Messages\FetchTransactionResponse;
 use Mpay24\Mpay24Order;
 
 class CompletePurchaseRequest extends AbstractMpay24Request

@@ -260,6 +260,28 @@ trait ParameterTrait
     }
 
     /**
+     * @return string
+     */
+    public function getPaymentMethods()
+    {
+        return $this->getParameter('paymentMethods');
+    }
+
+    /**
+     * A list of payment types and brands.
+     * Format is JSON: [{'paymentType':'type1','brand','brand1'},{...}]
+     * Example:
+     * '[{"paymentType":"CC","brand":"VISA"},{"paymentType":"CC","brand":"MASTERCARD"}]'
+     *
+     * @param  string|array $value
+     * @return $this
+     */
+    public function setPaymentMethods($value)
+    {
+        return $this->setParameter('paymentMethods', $value);
+    }
+
+    /**
      * Used for PayPal Express Checkout.
      * @return string
      */

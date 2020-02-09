@@ -7,12 +7,10 @@ namespace Omnipay\Mpay24;
 use Omnipay\Mpay24\Messages\FetchTransactionRequest;
 use Omnipay\Mpay24\Messages\Seamless\TokenRequest;
 use Omnipay\Mpay24\Messages\Seamless\PurchaseRequest;
-use Omnipay\Mpay24\Messages\Seamless\CompletePurchaseRequest;
-use Omnipay\Mpay24\Messages\CaptureRequest;
-use Omnipay\Mpay24\Messages\PaymentMethodsRequest;
+use Omnipay\Mpay24\Messages\CompletePurchaseRequest;
 use Omnipay\Mpay24\Messages\AcceptNotification;
 
-class SeamlessGateway extends RedirectGateway
+class SeamlessGateway extends PaymentPageGateway
 {
     /**
      * @return array
@@ -63,34 +61,5 @@ class SeamlessGateway extends RedirectGateway
     public function completePurchase(array $parameters = [])
     {
         return $this->createRequest(CompletePurchaseRequest::class, $parameters);
-    }
-
-    /**
-     * @param  array $parameters
-     * @return PurchaseRequest
-     */
-    public function completeAuthorize(array $parameters = [])
-    {
-        return $this->createRequest(CompletePurchaseRequest::class, $parameters);
-    }
-
-    public function acceptNotification(array $parameters = [])
-    {
-        return $this->createRequest(AcceptNotification::class, $parameters);
-    }
-
-    public function fetchTransaction(array $parameters = [])
-    {
-        return $this->createRequest(FetchTransactionRequest::class, $parameters);
-    }
-
-    public function capture(array $parameters = [])
-    {
-        return $this->createRequest(CaptureRequest::class, $parameters);
-    }
-
-    public function paymentMethods(array $parameters = [])
-    {
-        return $this->createRequest(PaymentMethodsRequest::class, $parameters);
     }
 }

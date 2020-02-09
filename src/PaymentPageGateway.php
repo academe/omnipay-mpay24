@@ -5,11 +5,13 @@ namespace Omnipay\Mpay24;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
 use Omnipay\Mpay24\Messages\FetchTransactionRequest;
-use Omnipay\Mpay24\Messages\Redirect\PurchaseRequest;
-use Omnipay\Mpay24\Messages\Redirect\CompletePurchaseRequest;
+use Omnipay\Mpay24\Messages\PaymentPage\PurchaseRequest;
+use Omnipay\Mpay24\Messages\CompletePurchaseRequest;
 use Omnipay\Mpay24\Messages\AcceptNotification;
+use Omnipay\Mpay24\Messages\CaptureRequest;
+use Omnipay\Mpay24\Messages\PaymentMethodsRequest;
 
-class RedirectGateway extends AbstractGateway implements ConstantsInterface
+class PaymentPageGateway extends AbstractGateway implements ConstantsInterface
 {
     use ParameterTrait;
 
@@ -29,7 +31,7 @@ class RedirectGateway extends AbstractGateway implements ConstantsInterface
         return [
             'merchantId' => '',
             'password' => '',
-            'templateSet' => ConstantsInterface::CSS_NAME_MODERN,
+            'cssName' => ConstantsInterface::CSS_NAME_MODERN,
         ];
     }
 
@@ -40,6 +42,15 @@ class RedirectGateway extends AbstractGateway implements ConstantsInterface
     public function purchase(array $parameters = [])
     {
         return $this->createRequest(PurchaseRequest::class, $parameters);
+    }
+
+    /**
+     * @param  array $parameters
+     * @return PurchaseRequest
+     */
+    public function authorize(array $parameters = [])
+    {
+        return $this->purchase($parameters);
     }
 
     /**
@@ -63,5 +74,15 @@ class RedirectGateway extends AbstractGateway implements ConstantsInterface
     public function fetchTransaction(array $parameters = [])
     {
         return $this->createRequest(FetchTransactionRequest::class, $parameters);
+    }
+
+    public function capture(array $parameters = [])
+    {
+        return $this->createRequest(CaptureRequest::class, $parameters);
+    }
+
+    public function paymentMethods(array $parameters = [])
+    {
+        return $this->createRequest(PaymentMethodsRequest::class, $parameters);
     }
 }
