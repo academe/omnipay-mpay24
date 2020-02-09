@@ -19,105 +19,93 @@ class PurchaseRequest extends AbstractMpay24Request
         // Collect together all the details of the payment to be made
         // with the token.
 
-        $additional = [
-            'successURL' => $this->getReturnUrl(),
-            'errorURL' => $this->getErrorUrl() ?: $this->getReturnUrl(),
-            'confirmationURL' => $this->getNotifyUrl(),
-        ];
+        $additional = [];
 
-        $card = $this->getCard();
+        // Required if useProfile is true
+        if ($this->getCustomerId()) {
+            $additional['customerID'] = $this->getCustomerId();
+        }
 
-        if (! empty($this->getLanguage())) {
-            $additional['language'] = strtoupper($this->getLanguage());
+        if ($this->getCustomerName()) {
+            $additional['customerName'] = $this->getCustomerName();
         }
 
         $order = [];
 
-        if ($this->getDescription()) {
-            $order['description'] = $this->getDescription();
-        }
-
         if ($this->getClientIp()) {
             $order['clientIP'] = $this->getClientIp();
+        }
+
+        if ($this->getDescription()) {
+            $order['description'] = $this->getDescription();
         }
 
         if ($this->getUserField()) {
             $order['userField'] = $this->getUserField();
         }
 
-        $billingAddress = [];
-        $shippingAddress = [];
+        if (! empty($this->getItems())) {
+            $itemNumber = 0;
 
-        if ($card) {
-            if ($card->getName()) {
-                $additional['customerName'] = $card->getName();
-            }
+            $order['shoppingCart'] = [];
 
-            if ($card->getBillingName() && $card->getBillingCountry()) {
-                // Populate billing address.
+            foreach ($this->getItems() as $item) {
+                $itemNumber++;
 
-                // All mandatory fields, according to the docs.
-                // However, they do appear to be optional.
-
-                if ($this->getMode()) {
-                    $billingAddress['mode'] = $this->getMode();
-                }
-
-                $billingAddress['name'] = $card->getBillingName();
-                $billingAddress['street'] = $card->getBillingAddress1();
-                $billingAddress['street2'] = $card->getBillingAddress2();
-                $billingAddress['zip'] = $card->getBillingPostcode();
-                $billingAddress['city'] = $card->getBillingCity();
-                $billingAddress['state'] = $card->getBillingState();
-                $billingAddress['countryCode'] = $card->getBillingCountry();
-            }
-
-            if ($card->getShippingName() && $card->getShippingCountry()) {
-                // Populate shipping address.
-
-                $shippingAddress['name'] = $card->getShippingName();
-                $shippingAddress['street'] = $card->getShippingAddress1();
-                $shippingAddress['street2'] = $card->getShippingAddress2();
-                $shippingAddress['zip'] = $card->getShippingPostcode();
-                $shippingAddress['city'] = $card->getShippingCity();
-                $shippingAddress['state'] = $card->getShippingState();
-                $shippingAddress['countryCode'] = $card->getShippingCountry();
+                $order['shoppingCart']['item-' . $itemNumber] = [
+                    'number' => $itemNumber,
+                    'productNr' => $item->getName(),
+                    'description' => $item->getDescription() ?: $item->getName(),
+                    //'package' => "Package 1",
+                    'quantity' => $item->getQuantity(),
+                    'itemPrice' => $item->getPrice(),
+                    //'itemPrice'->setTax(1.23),
+                    //'price' = 10.00,
+                ];
             }
         }
 
+        $billingAddress = array_filter($this->getBillingAddressData(), function ($value) {
+            return !empty($value);
+        });
+
+        // PaymentPage needs this to be mixed case, and seamless needs it
+        // to be upper case.
+
+        if (isset($billingAddress['mode'])) {
+            $billingAddress['mode'] = strtoupper($billingAddress['mode']);
+        }
+
+        $shippingAddress = array_filter($this->getShippingAddressData(), function ($value) {
+            return !empty($value);
+        });
+
         if (! empty($billingAddress)) {
             $order['billing'] = $billingAddress;
+        }
+
+        // PaymentPage needs this to be mixed case, and seamless needs it
+        // to be upper case.
+
+        if (isset($shippingAddress['mode'])) {
+            $shippingAddress['mode'] = strtoupper($shippingAddress['mode']);
         }
 
         if (! empty($shippingAddress)) {
             $order['shipping'] = $shippingAddress;
         }
 
-        $shoppingCart = [];
-
-        // Populate shopping cart.
-        // For details of what is supported, see:
-        // https://docs.mpay24.com/docs/soap-interface#section-shopping-cart
-
-        $items = $this->getItems();
-
-        if (! empty($items) && count($items) > 0) {
-            foreach ($items->all() as $item) {
-                // TODO
-            }
-        }
-
-        if (! empty($shoppingCart)) {
-            $order['shoppingCart'] = $shoppingCart;
-        }
-
         if (! empty($order)) {
             $additional['order'] = $order;
         }
 
-        // Required if useProfile is true
-        if ($this->getCustomerId()) {
-            $additional['customerID'] = $this->getCustomerId();
+        $additional['successURL'] = $this->getReturnUrl();
+        $additional['errorURL'] = $this->getErrorUrl() ?: $this->getReturnUrl();
+        //$additional['cancelURL'] = $this->getCancelUrl() ?: $this->getReturnUrl();
+        $additional['confirmationURL'] = $this->getNotifyUrl();
+
+        if (! empty($this->getLanguage())) {
+            $additional['language'] = strtoupper($this->getLanguage());
         }
 
         return [
@@ -155,14 +143,6 @@ class PurchaseRequest extends AbstractMpay24Request
         ];
 
         return new PurchaseResponse($this, $resultData);
-    }
-
-    /**
-     * The incoming server request.
-     */
-    protected function getServerRequest()
-    {
-        return $this->httpRequest;
     }
 
     /**
@@ -206,7 +186,7 @@ class PurchaseRequest extends AbstractMpay24Request
         }*/
 
         if ($ptype === static::PTYPE_PAYPAL) {
-            $payment['commit'] = (bool)$this->getCommit();
+            $payment['commit'] = (bool)$this->getCommit() ? 'true' : 'false';
             $payment['custom'] = $this->getUserField();
 
             return $payment;

@@ -21,14 +21,6 @@ class PurchaseRequest extends AbstractMpay24Request
     {
         $card = $this->getCard();
 
-        if ($card) {
-            if ($card->getname()) {
-                $customerName = $card->getname();
-            }
-        } else {
-            $customerName = null;
-        }
-
         return [
             'price' => $this->getAmount(),
             'currency' => $this->getCurrency(),
@@ -44,7 +36,9 @@ class PurchaseRequest extends AbstractMpay24Request
             'paymentMethods' => $this->getPaymentMethods(),
             'useProfile' => $this->getUseProfile(),
             'customerId' => $this->getCustomerId(),
-            'customerName' => $customerName,
+            'customerName' => $this->getCustomerName(),
+            'billingAddress' => $this->getBillingAddressData(),
+            'shippingAddress' => $this->getShippingAddressData(),
         ];
     }
 
@@ -118,7 +112,7 @@ class PurchaseRequest extends AbstractMpay24Request
 
         // See for more details:
         // https://docs.mpay24.com/docs/working-with-the-mpay24-php-sdk-redirect-integration
-        // Other supported objects (in order): Customer, BillingAddr, ShippingAddr
+        // Other supported objects (in order): BillingAddr, ShippingAddr
 
         if (isset($data['useProfile'])) {
             $mdxi->Order->Customer->setUseProfile($data['useProfile'] ? 'true' : 'false');
@@ -130,6 +124,30 @@ class PurchaseRequest extends AbstractMpay24Request
 
         if (isset($data['customerName'])) {
             $mdxi->Order->Customer = $data['customerName'];
+        }
+
+        if (! empty($data['billingAddress'])) {
+            $mdxi->Order->BillingAddr->setMode($data['billingAddress']['mode']);
+            $mdxi->Order->BillingAddr->Name = $data['billingAddress']['name'];
+            //$mdxi->Order->BillingAddr->Gender = $data['billingAddress']['gender'];
+            $mdxi->Order->BillingAddr->Street = $data['billingAddress']['street'];
+            $mdxi->Order->BillingAddr->Street2 = $data['billingAddress']['street2'];
+            $mdxi->Order->BillingAddr->Zip = $data['billingAddress']['zip'];
+            $mdxi->Order->BillingAddr->City = $data['billingAddress']['city'];
+            $mdxi->Order->BillingAddr->Country->setCode($data['billingAddress']['countryCode']);
+            $mdxi->Order->BillingAddr->Email = $data['billingAddress']['email'];
+            $mdxi->Order->BillingAddr->Phone = $data['billingAddress']['phone'];
+        }
+
+        if (! empty($data['shippingAddress'])) {
+            $mdxi->Order->ShippingAddr->setMode($data['shippingAddress']['mode']);
+            $mdxi->Order->ShippingAddr->Name = $data['shippingAddress']['name'];
+            $mdxi->Order->ShippingAddr->Street = $data['shippingAddress']['street'];
+            $mdxi->Order->ShippingAddr->Street2 = $data['shippingAddress']['street2'];
+            $mdxi->Order->ShippingAddr->Zip = $data['shippingAddress']['zip'];
+            $mdxi->Order->ShippingAddr->City = $data['shippingAddress']['city'];
+            $mdxi->Order->ShippingAddr->Country->setCode($data['shippingAddress']['countryCode']);
+            $mdxi->Order->ShippingAddr->Phone = $data['shippingAddress']['phone'];
         }
 
         $mdxi->Order->URL->Success      = $data['successUrl'];

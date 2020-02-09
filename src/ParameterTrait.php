@@ -303,18 +303,18 @@ trait ParameterTrait
      * Used for PayPal Express Checkout.
      * @return string
      */
-    public function getMode()
+    public function getAddressMode()
     {
-        return $this->getParameter('mode');
+        return $this->getParameter('addressMode');
     }
 
     /**
      * @param  string $value
      * @return $this
      */
-    public function setMode($value)
+    public function setAddressMode($value)
     {
-        return $this->setParameter('mode', $value);
+        return $this->setParameter('addressMode', $value);
     }
 
     /**

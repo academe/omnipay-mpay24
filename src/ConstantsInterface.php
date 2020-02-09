@@ -197,10 +197,14 @@ interface ConstantsInterface
     const BRAND_SOFORT      = 'SOFORT';
 
     /**
-     * Modes for PayPal Express
+     * Address fields modification mode.
+     * Note: the WSDL has these as upper case, but that is rejected
+     * by the test account. Only mixed case is accepted.
      */
 
-    const MODE_READWRITE = 'READWRITE';
+    const ADDRESS_MODE_READWRITE = 'ReadWrite';
+    const ADDRESS_MODE_READONLY = 'ReadOnly';
+
 
     /**
      * Person gender
@@ -214,7 +218,7 @@ interface ConstantsInterface
      * Use CSS_NAME_MODERN as the current responsive template.
      */
 
-    const CSS_NAME_WEB = 'WEB';
-    const CSS_NAME_MOBILE = 'MOBILE';
-    const CSS_NAME_MODERN = 'MODERN';
+    const CSS_NAME_WEB      = 'WEB';
+    const CSS_NAME_MOBILE   = 'MOBILE';
+    const CSS_NAME_MODERN   = 'MODERN';
 }
