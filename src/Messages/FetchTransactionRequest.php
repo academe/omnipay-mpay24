@@ -7,7 +7,6 @@ namespace Omnipay\Mpay24\Messages;
  */
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
-use Mpay24\Mpay24Order;
 
 class FetchTransactionRequest extends AbstractMpay24Request
 {

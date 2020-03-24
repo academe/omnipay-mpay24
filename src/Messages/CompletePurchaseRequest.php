@@ -2,8 +2,6 @@
 
 namespace Omnipay\Mpay24\Messages;
 
-use Mpay24\Mpay24Order;
-
 class CompletePurchaseRequest extends AbstractMpay24Request
 {
     /**

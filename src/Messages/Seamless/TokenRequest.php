@@ -3,7 +3,6 @@
 namespace Omnipay\Mpay24\Messages\Seamless;
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
-use Mpay24\Mpay24Order;
 
 class TokenRequest extends AbstractMpay24Request
 {
