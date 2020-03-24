@@ -43,11 +43,27 @@ class PurchaseRequest extends AbstractMpay24Request
     }
 
     /**
+     * XML Encode all strings in a nested array
+     */
+    public function xmlEncodeData(array $data): array
+    {
+        array_walk_recursive($data, function (& $item) {
+            if (is_string($item)) {
+                $item = str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $item);
+            }
+        });
+
+        return $data;
+    }
+
+    /**
      * @param array $data
      * @return ResponseInterface|PurchaseResponse
      */
     public function sendData($data)
     {
+        $data = $this->xmlEncodeData($data);
+
         $mpay24 = $this->getMpay();
 
         $mdxi = new Mpay24Order();
