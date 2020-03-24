@@ -4,6 +4,18 @@
 [![Latest Unstable Version](https://poser.pugx.org/academe/omnipay-mpay24/v/unstable)](https://packagist.org/packages/academe/omnipay-mpay24)
 [![License](https://poser.pugx.org/academe/omnipay-mpay24/license)](https://packagist.org/packages/academe/omnipay-mpay24)
 
+Table of Contents
+=================
+
+   * [mPAY24 Driver for Omnipay v3](#mpay24-driver-for-omnipay-v3)
+      * [Seamless Payment Initiation](#seamless-payment-initiation)
+         * [Create Token](#create-token)
+         * [Payment using Token](#payment-using-token)
+         * [Seamless Complete Payment](#seamless-complete-payment)
+      * [Payment Page](#payment-page)
+         * [Payment Page Complete Payment](#payment-page-complete-payment)
+      * [Notification Handler](#notification-handler)
+
 # mPAY24 Driver for Omnipay v3
 
 There are two main front ends to initiate a payment: *paymentPage* and *seamless*.
