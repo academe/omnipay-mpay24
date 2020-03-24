@@ -1,4 +1,9 @@
 
+[![Latest Stable Version](https://poser.pugx.org/academe/omnipay-mpay24/v/stable)](https://packagist.org/packages/academe/omnipay-mpay24)
+[![Total Downloads](https://poser.pugx.org/academe/omnipay-mpay24/downloads)](https://packagist.org/packages/academe/omnipay-mpay24)
+[![Latest Unstable Version](https://poser.pugx.org/academe/omnipay-mpay24/v/unstable)](https://packagist.org/packages/academe/omnipay-mpay24)
+[![License](https://poser.pugx.org/academe/omnipay-mpay24/license)](https://packagist.org/packages/academe/omnipay-mpay24)
+
 # mPAY24 Driver for Omnipay v3
 
 There are two main front ends to initiate a payment: *paymentPage* and *seamless*.

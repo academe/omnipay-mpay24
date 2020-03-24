@@ -13,7 +13,7 @@ class PurchaseRequest extends AbstractMpay24Request
     protected $paymentMethodCount = 0;
 
     /**
-     * Return the items basket/cart as data
+     * Return the items basket/cart as data with mPAY24 key names.
      */
     public function getItemsData(): array
     {
@@ -39,6 +39,8 @@ class PurchaseRequest extends AbstractMpay24Request
     }
 
     /**
+     * The data key names are from the mPAY24 spec, but lower camelCase.
+     *
      * @return array
      * @throws InvalidRequestException
      * @throws \Omnipay\Common\Exception\InvalidRequestException
