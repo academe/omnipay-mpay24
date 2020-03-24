@@ -13,14 +13,38 @@ class PurchaseRequest extends AbstractMpay24Request
     protected $paymentMethodCount = 0;
 
     /**
+     * Return the items basket/cart as data
+     */
+    public function getItemsData(): array
+    {
+        $data = [];
+
+        if (! empty($this->getItems())) {
+            $itemNumber = 0;
+
+            foreach ($this->getItems() as $item) {
+                $itemNumber++;
+
+                $data[$itemNumber] = [
+                    'number' => $itemNumber,
+                    'productNr' => $item->getName(),
+                    'description' => $item->getDescription() ?: $item->getName(),
+                    'quantity' => $item->getQuantity(),
+                    'itemPrice' => $item->getPrice(),
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @return array
      * @throws InvalidRequestException
      * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function getData()
     {
-        $card = $this->getCard();
-
         return [
             'price' => $this->getAmount(),
             'currency' => $this->getCurrency(),
@@ -39,6 +63,7 @@ class PurchaseRequest extends AbstractMpay24Request
             'customerName' => $this->getCustomerName(),
             'billingAddress' => $this->getBillingAddressData(),
             'shippingAddress' => $this->getShippingAddressData(),
+            'items' => $this->getItemsData(),
         ];
     }
 
@@ -103,18 +128,16 @@ class PurchaseRequest extends AbstractMpay24Request
             $mdxi->Order->ShoppingCart->Description = $data['description'];
         }
 
-        if (! empty($this->getItems())) {
-            $itemNumber = 0;
+        // Populate the optional basket.
 
-            foreach ($this->getItems() as $item) {
-                $itemNumber++;
-
+        if (! empty($data['items'])) {
+            foreach ($data['items'] as $itemNumber => $item) {
                 $mdxi->Order->ShoppingCart->Item($itemNumber)->Number = $itemNumber;
-                $mdxi->Order->ShoppingCart->Item($itemNumber)->ProductNr = $item->getName();
-                $mdxi->Order->ShoppingCart->Item($itemNumber)->Description = $item->getDescription() ?: $item->getName();
+                $mdxi->Order->ShoppingCart->Item($itemNumber)->ProductNr = $item['productNr'];
+                $mdxi->Order->ShoppingCart->Item($itemNumber)->Description = $item['description'];
                 //$mdxi->Order->ShoppingCart->Item($itemNumber)->Package = "Package 1";
-                $mdxi->Order->ShoppingCart->Item($itemNumber)->Quantity = $item->getQuantity();
-                $mdxi->Order->ShoppingCart->Item($itemNumber)->ItemPrice = $item->getPrice();
+                $mdxi->Order->ShoppingCart->Item($itemNumber)->Quantity = $item['quantity'];
+                $mdxi->Order->ShoppingCart->Item($itemNumber)->ItemPrice = $item['itemPrice'];
                 //$mdxi->Order->ShoppingCart->Item($itemNumber)->ItemPrice->setTax(1.23);
                 //$mdxi->Order->ShoppingCart->Item($itemNumber)->Price = 10.00;
             }
