@@ -73,10 +73,10 @@ This gives us a token and an iframe URL:
 
 ```php
 $response->getRedirectUrl();
-$response->getToken()
+$response->getToken();
 ```
 
-The payment form can be created as follows, assuming `/pay` as the next stage.
+The payment form can be created as follows, assuming `/pay` as the next enpoint in your flow.
 The iframe will contain the rendered credit card form.
 Add whatever additional customer or order details you want to the form.
 The iframe will be submitted with the form, but won't itself make any changes
@@ -84,13 +84,14 @@ to your form; the credit card details go straight to the mPAY24 gateway.
 With this example, the submit bitton will remain disabled until the credit card
 details in the iframe have been completed.
 
-The token possibly does not need to do through the form, but could be
-carried forward through the session instead.
+The token does not need to go through the form,
+but could be carried forward through the session instead.
 
 ```php
 <?php
 
 <iframe src="<?php echo $response->getRedirectUrl(); ?>" frameBorder="0" width="500"></iframe>
+
 <form action="/pay" method="POST">
   <input name="token" type="hidden" value="<?php echo $response->getToken(); ?>" />
   <button id="paybutton" name="type" value="TOKEN" type="submit" disabled="true">Pay with creditcard</button>
@@ -193,9 +194,9 @@ $response = $request->send();
 The `$response` will contain the normal Omnipay statuses and messages to define
 the result.
 
-Note: your `complete` endpoint will be given the transaction result when redirected
+**Note:** your `complete` endpoint will be given the transaction result when redirected
 from the gateway.
-This result is **not** signed, and so can be easily faked by an end user.
+This result is *not* signed, and so can be easily manipulated by an end user.
 For this reason, this driver fetches the result from the gateway (a "pull" notification)
 to ensure no untrusted user data becomes a part of the process.
 
@@ -208,7 +209,6 @@ merchant site.
 
 ### Purchase (redirect)
 
-```php
 ```php
 use Omnipay\Omnipay;
 use Omnipay\Common\CreditCard;
@@ -250,7 +250,15 @@ and `brand`. Example:
 Alternatively a range of payment methods can be supplied as a JSON string:
 
 ```php
-'paymentMethods' => '[{"paymentType":"CC","brand":"VISA"},{"paymentType":"CC","brand":"MASTERCARD"},{"paymentType":"PAYPAL","brand":"PAYPAL"}]',
+    'paymentMethods' => '[{"paymentType":"CC","brand":"VISA"},{"paymentType":"CC","brand":"MASTERCARD"},{"paymentType":"PAYPAL","brand":"PAYPAL"}]',
+
+    // alternatively:
+
+    'paymentMethods' => json_encode([
+        ['paymentType' => 'CC', 'brand' => 'VISA'],
+        ['paymentType' => 'CC', 'brand' => 'MASTERCARD'],
+        ['paymentType' => 'PAYPAL', 'brand' => 'PAYPAL'],
+    ]),
 ```
 
 ### Payment Page Complete Payment
