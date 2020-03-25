@@ -7,12 +7,14 @@
 Table of Contents
 =================
 
+   * [Table of Contents](#table-of-contents)
    * [mPAY24 Driver for Omnipay v3](#mpay24-driver-for-omnipay-v3)
       * [Seamless Payment Initiation](#seamless-payment-initiation)
          * [Create Token](#create-token)
-         * [Payment using Token](#payment-using-token)
+         * [Payment Using Token](#payment-using-token)
          * [Seamless Complete Payment](#seamless-complete-payment)
       * [Payment Page](#payment-page)
+         * [Purchase (redirect)](#purchase-redirect)
          * [Payment Page Complete Payment](#payment-page-complete-payment)
       * [Notification Handler](#notification-handler)
 
@@ -108,7 +110,7 @@ carried forward through the session instead.
 
 The `/pay` endpoint handles the actual payment.
 
-### Payment using Token
+### Payment Using Token
 
 ```php
 use Omnipay\Omnipay;
@@ -168,7 +170,7 @@ if (! $response->isSuccessful() && $response->isRedirect()) {
 
 ### Seamless Complete Payment
 
-After 3D Secure is completed, you will be returned to the `/complete` endpoint
+After 3D Secure is completed, you will be returned to your `/complete` endpoint
 where you need to fetch the results of the transation:
 
 ```
@@ -191,12 +193,20 @@ $response = $request->send();
 The `$response` will contain the normal Omnipay statuses and messages to define
 the result.
 
+Note: your `complete` endpoint will be given the transaction result when redirected
+from the gateway.
+This result is **not** signed, and so can be easily faked by an end user.
+For this reason, this driver fetches the result from the gateway (a "pull" notification)
+to ensure no untrusted user data becomes a part of the process.
+
 ## Payment Page
 
 The payment page sends the user to the payment gateway to make a payment.
 The user will have a single payment type chosen for them, or can choose
 from a range of payment types offered, from a list filtered by the
 merchant site.
+
+### Purchase (redirect)
 
 ```php
 ```php
