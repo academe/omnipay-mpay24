@@ -3,6 +3,7 @@
 namespace Omnipay\Mpay24\Messages\PaymentPage;
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
+use Omnipay\Common\Exception\InvalidRequestException;
 use Mpay24\Mpay24Order;
 
 class PurchaseRequest extends AbstractMpay24Request
@@ -13,32 +14,6 @@ class PurchaseRequest extends AbstractMpay24Request
     protected $paymentMethodCount = 0;
 
     /**
-     * Return the items basket/cart as data with mPAY24 key names.
-     */
-    public function getItemsData(): array
-    {
-        $data = [];
-
-        if (! empty($this->getItems())) {
-            $itemNumber = 0;
-
-            foreach ($this->getItems() as $item) {
-                $itemNumber++;
-
-                $data[$itemNumber] = [
-                    'number' => $itemNumber,
-                    'productNr' => $item->getName(),
-                    'description' => $item->getDescription() ?: $item->getName(),
-                    'quantity' => $item->getQuantity(),
-                    'itemPrice' => $item->getPrice(),
-                ];
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * The data key names are from the mPAY24 spec, but lower camelCase.
      *
      * @return array
@@ -47,6 +22,31 @@ class PurchaseRequest extends AbstractMpay24Request
      */
     public function getData()
     {
+        // Defaults for manual override.
+
+        $useProfile = $this->getUseProfile();
+        $customerId = $this->getCardReference() ?? $this->getCustomerId();
+
+        if ($this->getCreateCard()) {
+            // The application would like to create or update a card reference,
+            // also known as customerID, for recurrent payments.
+
+            $useProfile = true;
+
+            if (empty($customerId)) {
+                throw new InvalidRequestException('The customerId or cardReference parameter is required');
+     
+                // Note: we don't want this as it will fill up the account
+                // with many random customer IDs, hence throwing the exception..
+
+                // A specified cardReference has not been supplied (which is
+                // recommended) so we need to make one up.
+                // Format is 1 to 32 characters.
+
+                $customerId = bin2hex(random_bytes(16));
+            }
+        }
+
         return [
             'price' => $this->getAmount(),
             'currency' => $this->getCurrency(),
@@ -60,12 +60,12 @@ class PurchaseRequest extends AbstractMpay24Request
             'paymentType' => $this->getPaymentType(),
             'brand' => $this->getBrand(),
             'paymentMethods' => $this->getPaymentMethods(),
-            'useProfile' => $this->getUseProfile(),
-            'customerId' => $this->getCustomerId(),
+            'useProfile' => (bool)$useProfile,
+            'customerId' => $customerId,
             'customerName' => $this->getCustomerName(),
             'billingAddress' => $this->getBillingAddressData(),
             'shippingAddress' => $this->getShippingAddressData(),
-            'items' => $this->getItemsData(),
+            'shoppingCart' => $this->getShoppingCartData(),
         ];
     }
 
@@ -90,8 +90,6 @@ class PurchaseRequest extends AbstractMpay24Request
     public function sendData($data)
     {
         $data = $this->xmlEncodeData($data);
-
-        $mpay24 = $this->getMpay();
 
         $mdxi = new Mpay24Order();
         $mdxi->Order->Tid = $data['tid'];
@@ -132,8 +130,8 @@ class PurchaseRequest extends AbstractMpay24Request
 
         // Populate the optional basket.
 
-        if (! empty($data['items'])) {
-            foreach ($data['items'] as $itemNumber => $item) {
+        if (! empty($data['shoppingCart'])) {
+            foreach ($data['shoppingCart'] as $itemNumber => $item) {
                 $mdxi->Order->ShoppingCart->Item($itemNumber)->Number = $itemNumber;
                 $mdxi->Order->ShoppingCart->Item($itemNumber)->ProductNr = $item['productNr'];
                 $mdxi->Order->ShoppingCart->Item($itemNumber)->Description = $item['description'];
@@ -142,6 +140,8 @@ class PurchaseRequest extends AbstractMpay24Request
                 $mdxi->Order->ShoppingCart->Item($itemNumber)->ItemPrice = $item['itemPrice'];
                 //$mdxi->Order->ShoppingCart->Item($itemNumber)->ItemPrice->setTax(1.23);
                 //$mdxi->Order->ShoppingCart->Item($itemNumber)->Price = 10.00;
+                // Example os styling. The product on a red background.
+                //$mdxi->Order->ShoppingCart->Item($itemNumber)->Description->setStyle('background-color: red');
             }
         }
 
@@ -155,12 +155,12 @@ class PurchaseRequest extends AbstractMpay24Request
         // https://docs.mpay24.com/docs/working-with-the-mpay24-php-sdk-redirect-integration
         // Other supported objects (in order): BillingAddr, ShippingAddr
 
-        if (isset($data['useProfile'])) {
-            $mdxi->Order->Customer->setUseProfile($data['useProfile'] ? 'true' : 'false');
-        }
-
         if (isset($data['customerId'])) {
             $mdxi->Order->Customer->setId($data['customerId']);
+        }
+
+        if (isset($data['useProfile'])) {
+            $mdxi->Order->Customer->setUseProfile($data['useProfile'] ? 'true' : 'false');
         }
 
         if (isset($data['customerName'])) {
@@ -200,6 +200,8 @@ class PurchaseRequest extends AbstractMpay24Request
 
         //echo '<textarea style="width: 50%; height: 20em;">'; echo $mdxi->toXml(); echo '</textarea>';
 
+        $mpay24 = $this->getMpay();
+
         $paymentPage = $mpay24->paymentPage($mdxi);
 
         $data['redirectUrl'] = $paymentPage->getLocation();
@@ -210,6 +212,9 @@ class PurchaseRequest extends AbstractMpay24Request
         return new Response($this, $data);
     }
 
+    /**
+     * Add a single payment method to the mdxi object.
+     */
     protected function addPaymentType(Mpay24Order $mdxi, string $paymentType, string $brand)
     {
         if ($this->paymentMethodCount === 0) {

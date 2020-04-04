@@ -456,4 +456,76 @@ trait ParameterTrait
     {
         return $this->setParameter('pClass', $value);
     }
+
+    /**
+     * @return string
+     */
+    public function getCreateCard()
+    {
+        return $this->getParameter('createCard');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setCreateCard($value)
+    {
+        return $this->setParameter('createCard', $value);
+    }
+
+    /**
+     * Parameters for selecting profiles to list.
+     */
+
+    /**
+     * @return string
+     */
+    public function getExpiredBy()
+    {
+        return $this->getParameter('expiredBy');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setExpiredBy($value)
+    {
+        return $this->setParameter('expiredBy', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBegin()
+    {
+        return $this->getParameter('begin');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setBegin($value)
+    {
+        return $this->setParameter('begin', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->getParameter('size');
+    }
+
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setSize($value)
+    {
+        return $this->setParameter('size', $value);
+    }
 }

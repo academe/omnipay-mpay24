@@ -165,6 +165,7 @@ interface ConstantsInterface
     const PTYPE_PAYOLUTION  = 'PAYOLUTION';
     const PTYPE_SOFORT      = 'SOFORT';
     const PTYPE_MASTERPASS  = 'MASTERPASS';
+    const PTYPE_PROFILE     = 'PROFILE';
 
     /**
      * Brands.
@@ -221,4 +222,15 @@ interface ConstantsInterface
     const CSS_NAME_WEB      = 'WEB';
     const CSS_NAME_MOBILE   = 'MOBILE';
     const CSS_NAME_MODERN   = 'MODERN';
+
+    /**
+     *
+     */
+
+    const PROFILE_STATUS_IGNORED    = 'IGNORED';
+    const PROFILE_STATUS_USED       = 'USED';
+    const PROFILE_STATUS_ERROR      = 'ERROR';
+    const PROFILE_STATUS_CREATED    = 'CREATED';
+    const PROFILE_STATUS_UPDATED    = 'UPDATED';
+    const PROFILE_STATUS_DELETED    = 'DELETED';
 }

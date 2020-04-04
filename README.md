@@ -16,6 +16,7 @@ Table of Contents
       * [Payment Page](#payment-page)
          * [Purchase (redirect)](#purchase-redirect)
          * [Payment Page Complete Payment](#payment-page-complete-payment)
+         * [Payment Page Recurring Profiles](#payment-page-recurring-profiles)
       * [Notification Handler](#notification-handler)
 
 # mPAY24 Driver for Omnipay v3
@@ -110,6 +111,12 @@ but could be carried forward through the session instead.
 ```
 
 The `/pay` endpoint handles the actual payment.
+
+The above form does not redirect the user to a payment page.
+Instead, it sends the card details to the gateway, with the token as a key.
+So in the next step, the gateway will already have the card details and the
+merchant site will just use the pre-generated token to reference them when
+completing the payment.
 
 ### Payment Using Token
 
@@ -264,6 +271,54 @@ Alternatively a range of payment methods can be supplied as a JSON string:
 ### Payment Page Complete Payment
 
 The transaction is completed in exactly the same way as for the seamless payments.
+
+### Payment Page Recurring Profiles
+
+The gateway supports two types of profile: a single recurring payment profile for a customer,
+and up to 20 interactive profiles for each customer.
+The *Payment Page* API will support only ONE of these profile types at a time.
+This driver presently support ONLY recurrent payment profiles for *Payment Page*.
+
+To create or update a customer's recurring payment profile, when making a purchase,
+set the `createCard` flag and provide a `customerId`:
+
+    'createCard' => true,
+    'customerId' => 'cust-12345',
+
+On completing the payment, you can check if the customer recurring profile was created
+or updated by checking the profile status:
+
+    $profileWasCreatedOrUpdates = $completeResult->isProfileChanged();
+
+If this returns true, then it means the payment details for the current transaction
+have been saved against the customer ID.
+Use the customer ID as though it were a card reference when making a backend payment.
+
+A customer ID can be used to make a recurring payment (an offline payment) liek this:
+
+```php
+$gateway = Omnipay::create('Mpay24_Backend');
+
+// Set the usual merchant ID and test mode flags.
+
+$request = $gateway->purchase([
+    'amount' => '9.99',
+    'currency' => 'EUR',
+    'transactionId' => 'new-transaction-id',
+    'description' => 'Recurring Payment Description',
+    'card' => [
+        'name' => 'Customer Name',
+    ],
+    'notifyUrl' => 'https://omnipay.acadweb.co.uk/mpay24/notify.php?foo=bar&fee=fah', // mandatory
+    'language' => 'de',
+    // Either
+    'customerId' => 'cust-12345',
+    // or
+    'cardReference' => 'cust-12345',
+]);
+```
+
+This will return the details of the successful payment, or error details if not successful.
 
 ## Notification Handler
 

@@ -85,4 +85,22 @@ class PaymentPageGateway extends AbstractGateway implements ConstantsInterface
     {
         return $this->createRequest(PaymentMethodsRequest::class, $parameters);
     }
+
+    /**
+     * This is the same as purchase, but injects the createCard flag.
+     */
+    public function createCard(array $parameters = [])
+    {
+        $parameters['createCard'] = true;
+
+        return $this->purchase($parameters);
+    }
+
+    /**
+     * This is the same as createCard, but injects the createCard flag.
+     */
+    public function updateCard(array $parameters = [])
+    {
+        return $this->createCard($parameters);
+    }
 }

@@ -139,6 +139,11 @@ trait NotificationValuesTrait
         return $this->getDataItem('PROFILE_ID');
     }
 
+    public function getCardReference()
+    {
+        return $this->getCustomerId();
+    }
+
     // Status of the customer profile
     // TODO: lists as constants
     public function getProfileStatus()
@@ -172,5 +177,25 @@ trait NotificationValuesTrait
     public function isPending()
     {
         return $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
+    }
+
+    public function isProfileCreated()
+    {
+        return $this->getProfileStatus() === static::PROFILE_STATUS_CREATED;
+    }
+
+    public function isProfileUpdated()
+    {
+        return $this->getProfileStatus() === static::PROFILE_STATUS_UPDATED;
+    }
+
+    public function isProfileDeleted()
+    {
+        return $this->getProfileStatus() === static::PROFILE_STATUS_DELETED;
+    }
+
+    public function isProfileChanged()
+    {
+        return $this->isProfileCreated() || $this->isProfileUpdated() || isProfileDeleted();
     }
 }

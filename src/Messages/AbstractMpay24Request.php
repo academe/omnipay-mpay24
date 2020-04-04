@@ -7,6 +7,11 @@ use Omnipay\Mpay24\ParameterTrait;
 use Omnipay\Mpay24\ConstantsInterface;
 use Mpay24\Mpay24;
 use Mpay24\Mpay24Config;
+use Money\Money;
+use Money\Number;
+//use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Parser\DecimalMoneyParser;
 
 abstract class AbstractMpay24Request extends AbstractRequest implements ConstantsInterface
 {
@@ -135,9 +140,38 @@ abstract class AbstractMpay24Request extends AbstractRequest implements Constant
     }
 
     /**
-     * @return array
+     * Return the items basket/cart as data with mPAY24 key names.
      */
-    protected function getShoppingCartData()
+    public function getShoppingCartData(): array
     {
+        $data = [];
+
+        if (! empty($this->getItems())) {
+            $itemNumber = 0;
+
+            foreach ($this->getItems() as $item) {
+                $itemNumber++;
+
+                $currencyCode = $this->getCurrency();
+                $currency = new Currency($currencyCode);
+
+                $moneyParser = new DecimalMoneyParser($this->getCurrencies());
+
+                $number = Number::fromString($item->getPrice());
+
+                $money = $moneyParser->parse((string) $number, $currency);
+
+                $data[$itemNumber] = [
+                    'number' => $itemNumber,
+                    'productNr' => $item->getName(),
+                    'description' => $item->getDescription() ?: $item->getName(),
+                    'quantity' => $item->getQuantity(),
+                    'itemPrice' => $item->getPrice(), // Major units
+                    'amount' => $money->getAmount(), // Minor units
+                ];
+            }
+        }
+
+        return $data;
     }
 }
