@@ -25,7 +25,7 @@ class PurchaseRequest extends AbstractMpay24Request
         // Defaults for manual override.
 
         $useProfile = $this->getUseProfile();
-        $customerId = $this->getCardReference() ?? $this->getCustomerId();
+        $customerId = $this->getCardReference();
 
         if ($this->getCreateCard()) {
             // The application would like to create or update a card reference,
@@ -34,7 +34,7 @@ class PurchaseRequest extends AbstractMpay24Request
             $useProfile = true;
 
             if (empty($customerId)) {
-                throw new InvalidRequestException('The customerId or cardReference parameter is required');
+                //throw new InvalidRequestException('The customerId or cardReference parameter is required');
      
                 // Note: we don't want this as it will fill up the account
                 // with many random customer IDs, hence throwing the exception..
@@ -43,7 +43,8 @@ class PurchaseRequest extends AbstractMpay24Request
                 // recommended) so we need to make one up.
                 // Format is 1 to 32 characters.
 
-                $customerId = bin2hex(random_bytes(16));
+                //$customerId = bin2hex(random_bytes(16));
+                $customerId = md5(getmypid() . $this->getTransactionId() . microtime(true));
             }
         }
 

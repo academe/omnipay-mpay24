@@ -280,10 +280,10 @@ The *Payment Page* API will support only ONE of these profile types at a time.
 This driver presently support ONLY recurrent payment profiles for *Payment Page*.
 
 To create or update a customer's recurring payment profile, when making a purchase,
-set the `createCard` flag and provide a `customerId`:
+set the `createCard` flag and provide a `cardReference`:
 
     'createCard' => true,
-    'customerId' => 'cust-12345',
+    'cardReference' => 'card-12345',
 
 On completing the payment, you can check if the customer recurring profile was created
 or updated by checking the profile status:
@@ -311,10 +311,7 @@ $request = $gateway->purchase([
     ],
     'notifyUrl' => 'https://omnipay.acadweb.co.uk/mpay24/notify.php?foo=bar&fee=fah', // mandatory
     'language' => 'de',
-    // Either
-    'customerId' => 'cust-12345',
-    // or
-    'cardReference' => 'cust-12345',
+    'cardReference' => 'card-12345',
 ]);
 ```
 
