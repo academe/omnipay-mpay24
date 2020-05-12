@@ -26,15 +26,17 @@ class PurchaseRequest extends AbstractMpay24Request
         if (! empty($items)) {
             $item = array_shift($items);
 
-            $shoppingCartItem = [
-                'number' => $item['number'],
-                'productNr' => $item['productNr'],
-                'description' => $item['description'],
-                'quantity' => $item['quantity'],
-                'amount' => $item['amount'],
+            $shoppingCart = [
+                'item' => [
+                    'number' => $item['number'],
+                    'productNr' => $item['productNr'],
+                    'description' => $item['description'],
+                    'quantity' => $item['quantity'],
+                    'amount' => $item['amount'],
+                ]
             ];
         } else {
-            $shoppingCartItem = [];
+            $shoppingCart = [];
         }
 
         return [
@@ -49,9 +51,7 @@ class PurchaseRequest extends AbstractMpay24Request
                 'customerName' => $this->getCustomerName(),
                 'order' => [
                     'description' => $this->getDescription(),
-                    'shoppingCart' => [
-                        'item' => $shoppingCartItem,
-                    ],
+                    'shoppingCart' => $shoppingCart,
                 ],
                 'confirmationUrl' => $this->getNotifyUrl(),
                 'language' => strtoupper($this->getLanguage()),
