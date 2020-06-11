@@ -168,8 +168,8 @@ trait NotificationValuesTrait
      */
     public function isSuccessful()
     {
-        return $this->getTransactionState() === static::TRANSACTION_STATE_BILLED
-            || $this->getOperationStatus() === static::OPERATION_STATUS_OK;
+        return $this->getOperation() === 'CONFIRMATION' && $this->getTransactionState() === static::TRANSACTION_STATE_BILLED
+            || $this->getReturnCode() === 'PROFILE_USED' && $this->getOperationStatus() === static::OPERATION_STATUS_OK;
     }
 
     /**
