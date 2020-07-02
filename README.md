@@ -257,16 +257,21 @@ and `brand`. Example:
 Alternatively a range of payment methods can be supplied as a JSON string:
 
 ```php
-    'paymentMethods' => '[{"paymentType":"CC","brand":"VISA"},{"paymentType":"CC","brand":"MASTERCARD"},{"paymentType":"PAYPAL","brand":"PAYPAL"}]',
+    'paymentMethods' => [
+      ["paymentType" => "CC", "brand" => "VISA"],
+      ["paymentType" => "CC", "brand" => "MASTERCARD"],
+      ["paymentType" => "PAYPAL", "brand" => "PAYPAL"],
+    ],
 
-    // alternatively:
-
-    'paymentMethods' => json_encode([
-        ['paymentType' => 'CC', 'brand' => 'VISA'],
-        ['paymentType' => 'CC', 'brand' => 'MASTERCARD'],
-        ['paymentType' => 'PAYPAL', 'brand' => 'PAYPAL'],
-    ]),
+    // Or you can supply 'paymentMethods' as a JSON string.
 ```
+
+For some payment types the brand is mandatory and for some it is optional.
+Examples:
+
+* `paymentType` "CC" and `brand` "VISA" will offer a visa card payment type only.
+* `paymentType` "CC" and no `brand` will offer a choice of all credit card types available.
+* No `paymentType` and no `brand` will offer a choice from all payment types available.
 
 ### Payment Page Complete Payment
 

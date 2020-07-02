@@ -141,6 +141,8 @@ interface ConstantsInterface
 
     // The transaction was ok and the profile created
     const RETURN_CODE_PROFILE_CREATED = 'PROFILE_CREATED';
+    // The transaction was ok and the profile created
+    const RETURN_CODE_PROFILE_USED = 'PROFILE_USED';
     //The transaction was ok and the profile updated
     const RETURN_CODE_PROFILE_UPDATED = 'PROFILE_UPDATED';
     //The transaction was ok but the profile was not stored/updated

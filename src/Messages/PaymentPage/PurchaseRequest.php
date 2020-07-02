@@ -107,20 +107,24 @@ class PurchaseRequest extends AbstractMpay24Request
             $mdxi->Order->TemplateSet->setCSSName($data['cssName']);
         }
 
-        if (isset($data['paymentType']) && isset($data['brand'])) {
+        if (isset($data['paymentType'])) {
             // A single payment type is requested.
 
-            $this->addPaymentType($mdxi, $data['paymentType'], $data['brand']);
+            $this->addPaymentType($mdxi, $data['paymentType'], $data['brand'] ?? null);
         }
 
         if (isset($data['paymentMethods'])) {
             // A list of payment types is requested for the payment page.
 
-            $paymentMethods = json_decode($data['paymentMethods'], true);
+            if (is_string($data['paymentMethods'])) {
+                $paymentMethods = json_decode($data['paymentMethods'], true);
+            } else {
+                $paymentMethods = $data['paymentMethods'];
+            }
 
             if (is_array($paymentMethods)) {
                 foreach ($paymentMethods as $paymentMethod) {
-                    $this->addPaymentType($mdxi, $paymentMethod['paymentType'], $paymentMethod['brand']);
+                    $this->addPaymentType($mdxi, $paymentMethod['paymentType'], $paymentMethod['brand'] ?? null);
                 }
             }
         }
@@ -216,7 +220,7 @@ class PurchaseRequest extends AbstractMpay24Request
     /**
      * Add a single payment method to the mdxi object.
      */
-    protected function addPaymentType(Mpay24Order $mdxi, string $paymentType, string $brand)
+    protected function addPaymentType(Mpay24Order $mdxi, string $paymentType, ?string $brand = null)
     {
         if ($this->paymentMethodCount === 0) {
             $mdxi->Order->PaymentTypes->setEnable('true');
@@ -225,6 +229,9 @@ class PurchaseRequest extends AbstractMpay24Request
         $this->paymentMethodCount++;
 
         $mdxi->Order->PaymentTypes->Payment($this->paymentMethodCount)->setType($paymentType);
-        $mdxi->Order->PaymentTypes->Payment($this->paymentMethodCount)->setBrand($brand);
+
+        if ($brand !== null) {
+            $mdxi->Order->PaymentTypes->Payment($this->paymentMethodCount)->setBrand($brand);
+        }
     }
 }
