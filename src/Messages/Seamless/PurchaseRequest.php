@@ -100,7 +100,6 @@ class PurchaseRequest extends AbstractMpay24Request
 
         $additional['successURL'] = $this->getReturnUrl();
         $additional['errorURL'] = $this->getErrorUrl() ?: $this->getReturnUrl();
-        //$additional['cancelURL'] = $this->getCancelUrl() ?: $this->getReturnUrl();
         $additional['confirmationURL'] = $this->getNotifyUrl();
 
         if (! empty($this->getLanguage())) {

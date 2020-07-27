@@ -3,6 +3,7 @@
 namespace Omnipay\Mpay24\Messages\Backend;
 
 use Omnipay\Mpay24\Messages\AbstractMpay24Request;
+use Omnipay\Common\Exception\InvalidRequestException;
 use Mpay24\Mpay24Order;
 
 class PurchaseRequest extends AbstractMpay24Request
@@ -16,7 +17,11 @@ class PurchaseRequest extends AbstractMpay24Request
      */
     public function getData()
     {
-        // TODO: validate mandatory params.
+        $this->validate('card');
+
+        if (empty($this->getCustomerName())) {
+            throw new InvalidRequestException('Customer name must be supplied.');
+        }
 
         // A single shopping cart item can be provided.
         // Just take the first item from the basket.
@@ -39,6 +44,37 @@ class PurchaseRequest extends AbstractMpay24Request
             $shoppingCart = [];
         }
 
+        $order = [
+            'description' => $this->getDescription(),
+            'shoppingCart' => $shoppingCart,
+        ];
+
+        $billingAddress = array_filter($this->getBillingAddressData(), function ($value) {
+            return !empty($value);
+        });
+
+        if (isset($billingAddress['mode'])) {
+            // Backend requires upper-case.
+            $billingAddress['mode'] = strtoupper($billingAddress['mode']);
+        }
+
+        if (! empty($billingAddress)) {
+            $order['billing'] = $billingAddress;
+        }
+
+        $shippingAddress = array_filter($this->getShippingAddressData(), function ($value) {
+            return !empty($value);
+        });
+
+        if (isset($shippingAddress['mode'])) {
+            // Backend requires upper-case.
+            $shippingAddress['mode'] = strtoupper($shippingAddress['mode']);
+        }
+
+        if (! empty($shippingAddress)) {
+            $order['shipping'] = $shippingAddress;
+        }
+
         return [
             'tid' => $this->getTransactionId(),
             'payment' => [
@@ -49,10 +85,7 @@ class PurchaseRequest extends AbstractMpay24Request
             'additional' => [
                 'customerID' => $this->getCustomerId() ?: $this->getCardReference(),
                 'customerName' => $this->getCustomerName(),
-                'order' => [
-                    'description' => $this->getDescription(),
-                    'shoppingCart' => $shoppingCart,
-                ],
+                'order' => $order,
                 'confirmationUrl' => $this->getNotifyUrl(),
                 'language' => strtoupper($this->getLanguage()),
             ],
