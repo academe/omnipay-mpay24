@@ -17,12 +17,6 @@ class PurchaseRequest extends AbstractMpay24Request
      */
     public function getData()
     {
-        $this->validate('card');
-
-        if (empty($this->getCustomerName())) {
-            throw new InvalidRequestException('Customer name must be supplied.');
-        }
-
         // A single shopping cart item can be provided.
         // Just take the first item from the basket.
 
