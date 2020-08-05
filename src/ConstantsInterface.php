@@ -31,25 +31,30 @@ interface ConstantsInterface
     const TRANSACTION_STATE_ERROR = 'ERROR';
     // The amount was reserved but not settled/billed yet.
     // The transaction was successful.
+    // aka Authorization
     const TRANSACTION_STATE_RESERVED = 'RESERVED';
     // The reserved amount was complaint.
     const TRANSACTION_STATE_RESERVED_REVERSAL = 'RESERVED_REVERSAL';
     // The amount was settled/billed.
     // The transaction was successful.
+    // aka Capture
     const TRANSACTION_STATE_BILLED = 'BILLED';
     // The amount was complaint (chargeback).
     // Please get in touch with the customer.
     const TRANSACTION_STATE_BILLED_REVERSAL = 'BILLED_REVERSAL';
     // The reserved amount was released.
     // The transaction was canceled.
+    // aka Cancelled
     const TRANSACTION_STATE_REVERSED = 'REVERSED';
     // The amount will be refunded.
     // The transaction was credited.
+    // aka Credit
     const TRANSACTION_STATE_CREDITED = 'CREDITED';
     // The credited amount was complaint.
     const TRANSACTION_STATE_CREDITED_REVERSAL = 'CREDITED_REVERSAL';
     // Expecting external interface confirmation.
     // The transaction is suspended temporarily.
+    // aka Waiting for confirmation
     const TRANSACTION_STATE_SUSPENDED = 'SUSPENDED';
     // The payout was successful.
     // The amount will be transfered to the customer.
@@ -57,13 +62,23 @@ interface ConstantsInterface
     // Other states documented in othee places:
     const TRANSACTION_STATE_INIT = 'INIT';
     const TRANSACTION_STATE_AUTHORIZE = 'AUTHORIZE';
+    // Expecting user input on an external web-page.
+    // If this status remains unchanged for more than 24 hours the transaction can be considered as failed.
+    // Redirect
     const TRANSACTION_STATE_REDIRECTED = 'REDIRECTED';
     const TRANSACTION_STATE_CALLBACK = 'CALLBACK';
     const TRANSACTION_STATE_EXECUTE = 'EXECUTE';
     const TRANSACTION_STATE_REVOKE = 'REVOKE';
     const TRANSACTION_STATE_REJECT = 'REJECT';
     const TRANSACTION_STATE_ARCHIVED = 'ARCHIVED';
+    // The amount was withdrawn.
+    // The transaction was successful.
+    // aka Withdraw
     const TRANSACTION_STATE_WITHDRAW = 'WITHDRAW';
+
+    // Plus:
+    // Pending	Expecting external interface confirmation. The transaction is in progress. If this status remains unchanged for more than 24 hours please contact mPAY24 Support.
+    // Chargeback	The amount was charged back by the customer.
 
     /**
      * Return codes to instructions.

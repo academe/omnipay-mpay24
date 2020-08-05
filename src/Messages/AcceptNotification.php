@@ -29,6 +29,11 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
         NotificationValuesTrait::getProfileId insteadof ParameterTrait;
     }
 
+    /**
+     * @var string extend statuses of NotificationInterface.
+     */
+    const STATUS_REFUNDED = 'refunded';
+
     protected $data;
 
     /**
@@ -39,8 +44,13 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
         switch ($this->getTransactionState()) {
             case static::TRANSACTION_STATE_BILLED:
                 return static::STATUS_COMPLETED;
+
             case static::TRANSACTION_STATE_RESERVED:
+            case static::TRANSACTION_STATE_SUSPENDED:
                 return static::STATUS_PENDING;
+
+            case static::TRANSACTION_STATE_CREDITED:
+                return static::STATUS_REFUNDED;
         }
 
         return static::STATUS_FAILED;
@@ -69,12 +79,16 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
     public function isSuccessful()
     {
         return $this->getTransactionState() === static::TRANSACTION_STATE_BILLED
-            ||  $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
+            ||  $this->isPending();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isPending()
     {
-        return $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED;
+        return $this->getTransactionState() === static::TRANSACTION_STATE_RESERVED
+            || $this->getTransactionState() === static::TRANSACTION_STATE_SUSPENDED;
     }
 
     /**
@@ -91,6 +105,17 @@ class AcceptNotification extends AbstractMpay24Request implements NotificationIn
     public function isRedirect()
     {
         return false;
+    }
+
+    /**
+     * An extension of the standard Omnipay statuses.
+     * @return bool
+     */
+    public function isRefunded()
+    {
+        return $this->getTransactionState() === static::TRANSACTION_STATE_CREDITED
+            || $this->getTransactionState() === static::TRANSACTION_STATE_REVERSED;
+
     }
 
     /**
