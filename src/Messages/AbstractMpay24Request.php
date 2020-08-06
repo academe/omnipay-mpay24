@@ -122,7 +122,7 @@ abstract class AbstractMpay24Request extends AbstractRequest implements Constant
             ? static::ADDRESS_MODE_READWRITE
             : static::ADDRESS_MODE_READONLY;
 
-        $countryCode = preg_match('/^[A-Z]{2}$/i', $card->getBillingCountry())
+        $countryCode = preg_match('/^[A-Z]{2}$/i', $card->getShippingCountry())
             ? strtoupper($card->getShippingCountry())
             : null;
 
